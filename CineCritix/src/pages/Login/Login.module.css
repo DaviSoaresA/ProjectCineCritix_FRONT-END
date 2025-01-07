@@ -11,6 +11,7 @@ body {
   margin: 0;
   padding: 0;
   position: relative;
+  flex-direction: row; /* Layout padrão em desktop */
 }
 
 .picture {
@@ -90,4 +91,68 @@ body {
   flex-direction: column;
   gap: 40px;
   margin-bottom: 10px;
+}
+
+.error {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 5px;
+  margin-bottom: -15px;
+}
+
+.textInput {
+  width: 34vh !important;
+  all: unset;
+  border: 2px solid #fff;
+  padding: 15px;
+  border-radius: 10px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+  font-size: 20px;
+}
+
+.textInput::placeholder {
+  color: var(--branco);
+}
+
+@media (max-width: 700px) {
+  .container {
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .positionPicture {
+    margin-top: 10px;
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    order: 2;
+    height: auto;
+  }
+
+  .picture {
+    height: 50vh;
+  }
+
+  .box {
+    height: 50vh;
+  }
+
+  .positionForm {
+    position: relative;
+    width: 100%;
+    height: auto;
+    order: 1;
+    margin-bottom: 20px;
+    transform: scale(0.8);
+  }
+
+  .form {
+    gap: 20px;
+  }
+
+  .textInput {
+    width: 80%;
+    font-size: 16px;
+  }
 }
