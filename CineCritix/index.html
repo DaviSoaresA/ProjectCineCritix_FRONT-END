@@ -1,13 +1,48 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + React</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Aplicando fontes diretamente no HTML */
+      body {
+        font-family: 'Inter', sans-serif;
+        font-weight: 400;
+        font-optical-sizing: auto;
+      }
+
+      h1 {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 400;
+      }
+
+      h2 {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 300;
+      }
+
+      p {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 300;
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <h1>Hello, World!</h1>
+      <p>This is a paragraph with Comic Neue font.</p>
+      <p style="font-family: 'Sour Gummy', cursive; font-weight: 900;">
+        This is a paragraph with Sour Gummy font.
+      </p>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
