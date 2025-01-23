@@ -9,7 +9,7 @@ export default function Home() {
   async function getMovies() {
     try {
       const response = await axios.get(
-        `http://www.omdbapi.com/?s=movie&page=${page}&apikey=2fcfe92f`
+        `http://localhost:8080/`
       );
 
       if (response.data.Response === "True") {
