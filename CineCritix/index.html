@@ -8,29 +8,29 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700&display=swap"
       rel="stylesheet"
     />
     <style>
-      /* Aplicando fontes diretamente no HTML */
+      /* Aplicando Open Sans a todo o documento */
       body {
-        font-family: 'Inter', sans-serif;
+        font-family: 'Open Sans', sans-serif;
         font-weight: 400;
-        font-optical-sizing: auto;
+      }
+
+      h1, h2, p {
+        font-family: 'Open Sans', sans-serif;
       }
 
       h1 {
-        font-family: 'Montserrat', sans-serif;
-        font-weight: 400;
+        font-weight: 900;
       }
 
       h2 {
-        font-family: 'Montserrat', sans-serif;
-        font-weight: 300;
+        font-weight: 700;
       }
 
       p {
-        font-family: 'Montserrat', sans-serif;
         font-weight: 300;
       }
     </style>
@@ -38,9 +38,9 @@
   <body>
     <div id="root">
       <h1>Hello, World!</h1>
-      <p>This is a paragraph with Comic Neue font.</p>
-      <p style="font-family: 'Sour Gummy', cursive; font-weight: 900;">
-        This is a paragraph with Sour Gummy font.
+      <p>This is a paragraph with Open Sans font.</p>
+      <p style="font-weight: 700;">
+        This is a bold paragraph with Open Sans font.
       </p>
     </div>
     <script type="module" src="/src/main.jsx"></script>
