@@ -57,7 +57,7 @@ export default function Home() {
   };
 
   useEffect(() => {
-    getMovie("sonic");
+    getMovie("Star Wars");
     getMovies();
   }, []);
 
@@ -91,7 +91,7 @@ export default function Home() {
       >
         {movie.length > 0 ? (
           movie.map((movie, index) => (
-            <SwiperSlide key={index} className={styles.swiperSlide}>
+            <SwiperSlide key={index} className={styles.swiperSlide} onClick={() => navigate(`/movie/${movie.imdbID}`)}>
               <img
                 src={
                   movie.Poster !== "N/A"
