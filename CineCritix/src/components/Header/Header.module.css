@@ -69,3 +69,17 @@
     left: 50%;
     position: relative;
 }
+
+.logo {
+    position: absolute;
+    top: 0%;
+    left: 3%;
+    width: 10rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.logo:hover {
+    opacity: 0.7;
+
+}
