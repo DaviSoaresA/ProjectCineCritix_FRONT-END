@@ -1,14 +1,41 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import * as styles from "../MyAccount/MyAccount.module.css";
 import Header from "../../components/Header";
 import { useForm } from "react-hook-form";
+import axios from "axios";
+import { FaEdit, FaPen } from "react-icons/fa";
+import { FiEdit3 } from "react-icons/fi";
+
+const API_KEY = "2fcfe92f";
 
 export default function MyAccount() {
+  const [movies, setMovies] = useState([]);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
+
+  useEffect(() => {
+    const getMovies = async (query) => {
+      try {
+        const response = await axios.get(
+          `http://www.omdbapi.com/?s=movie&page=1&apikey=${API_KEY}`
+        );
+
+        if (response.data.Search) {
+          setMovies(response.data.Search);
+          console.log(response.data.Search);
+        } else {
+          setMovies([]);
+        }
+      } catch (error) {
+        alert("Erro ao buscar filmes. Tente novamente.");
+      }
+    };
+
+    getMovies();
+  }, []);
 
   return (
     <main>
@@ -47,7 +74,7 @@ export default function MyAccount() {
             </div>
 
             <div className={styles.input}>
-                <h3 className={styles.text}>Email</h3>
+              <h3 className={styles.text}>Email</h3>
               <input
                 className={styles.textInput}
                 placeholder="Email"
@@ -65,7 +92,7 @@ export default function MyAccount() {
             </div>
 
             <div className={styles.input}>
-                <h3 className={styles.text}>Senha</h3>
+              <h3 className={styles.text}>Senha</h3>
               <input
                 className={styles.textInput}
                 placeholder="Senha"
@@ -79,7 +106,7 @@ export default function MyAccount() {
             </div>
 
             <div className={styles.input}>
-                <h3 className={styles.text}>Confirma Senha</h3>
+              <h3 className={styles.text}>Confirma Senha</h3>
               <input
                 className={styles.textInput}
                 placeholder="Confirma senha"
@@ -92,8 +119,36 @@ export default function MyAccount() {
               )}
             </div>
 
-            <button className={styles.buttonSave}><h3>Salvar Alterações</h3></button>
+            <div className={styles.input}>
+              <button className={styles.buttonSave}>
+                <h3>Salvar Alterações</h3>
+              </button>
+            </div>
           </form>
+
+          <h1>Avaliações:</h1>
+
+          <div className={styles.contain}>
+            {movies.length > 0 ? (
+              movies.map((movie) => (
+                <div
+                  key={movie.imdbID}
+                  className={styles.card}
+                  onClick={() => navigate(`/movie/${movie.imdbID}`)}
+                >
+                  <img src={movie.Poster} alt={movie.Title} />
+                  <div className={styles.title}>
+                    <h4>{movie.Title}</h4>
+                  </div>
+                  <button className={styles.edit}>
+                    <FaPen />
+                  </button>
+                </div>
+              ))
+            ) : (
+              <p>Carregando filmes...</p>
+            )}
+          </div>
         </div>
       </div>
     </main>
