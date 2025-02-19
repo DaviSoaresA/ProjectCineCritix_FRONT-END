@@ -3,6 +3,7 @@ import Home from '../pages/Home'
 import Movie from '../pages/Movie'
 import { Route, Router, Routes } from 'react-router-dom'
 import Register from '../pages/Register'
+import Login from '../pages/Login'
 
 export default function AppRoutes() {
   return (
@@ -10,6 +11,7 @@ export default function AppRoutes() {
         <Route path="/" element={<Home />} />
         <Route path="/movie/:id" element={<Movie />} />
         <Route path="/cadastrar" element={<Register />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
   )
 }

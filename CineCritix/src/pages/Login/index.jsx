@@ -9,6 +9,8 @@ import ButtonLogin from "../../components/ButtonLogin";
 import "../../Global.css";
 import * as styles from "../Login/Login.module.css";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const supabase = createClient(
   "https://pyobmpozoesyxoxsfgbq.supabase.co",
@@ -16,6 +18,7 @@ const supabase = createClient(
 );
 
 export default function Login() {
+  const navigation = useNavigate();
   const {
     register,
     handleSubmit,
@@ -54,8 +57,23 @@ export default function Login() {
     setUser(null);
   };
 
-  const onSubmit = (data) => {
-    console.log("Form Data:", data);
+  const onSubmit = async (data) => {
+    const credenciais = {
+      email: data.email,
+      password: data.password
+    };
+    
+    const response = await axios.post("http://localhost:8080/login", credenciais);
+
+    if (response.status == 200) {
+      const token = response.headers["Authorization"];
+      localStorage.setItem("token", token);
+      navigation("/");
+    } else if(response.status >= 400 || response.status < 500) {
+      alert("Erro nas credenciais");
+    } else {
+      alert("Erro de conexão");
+    }
   };
 
   return (
@@ -162,7 +180,13 @@ export default function Login() {
               <ButtonLogin name={"Entrar"} type="submit" />
             </form>
             <p>
-              Não tem uma conta? <a href="">Registre-se</a>
+              Não tem uma conta?{" "}
+              <button
+                className={styles.register}
+                onClick={() => navigation("/cadastrar")}
+              >
+                Registre-se
+              </button>
             </p>
           </div>
         </div>
