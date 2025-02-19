@@ -5,6 +5,8 @@ import { Star, StarHalf } from "lucide-react";
 import styles from "../Movie/Movie.module.css";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import { useForm } from "react-hook-form";
+import { div, p } from "framer-motion/client";
 
 const API_KEY = "a1597f569dafd7069822328e2bd0d446";
 const API_KEY2 = "2fcfe92f";
@@ -15,8 +17,33 @@ export default function Movie() {
   const [backdrop, setBackdrop] = useState("");
   const [trailerUrl, setTrailerUrl] = useState("");
   const [cast, setCast] = useState([]);
+  const [userRating, setUserRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [comentarios, setComentarios] = useState([]);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm();
 
   useEffect(() => {
+    setValue("rating", userRating);
+  }, [userRating, setValue]);
+
+  useEffect(() => {
+    const fetchComentarios = async () => {
+      try {
+        const response = await axios.get(
+          "https://6750549b69dc1669ec1aa14e.mockapi.io/comentario"
+        );
+        setComentarios(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar comentários:", error);
+      }
+    };
+
     const getMovieById = async (imdbID) => {
       try {
         const omdbResponse = await axios.get(
@@ -73,6 +100,8 @@ export default function Movie() {
       }
     };
 
+    fetchComentarios();
+
     if (id) {
       getMovieById(id);
     }
@@ -91,7 +120,11 @@ export default function Movie() {
       stars.push(
         <div
           key="half"
-          style={{ position: "relative", display: "inline-block", width: "32px" }}
+          style={{
+            position: "relative",
+            display: "inline-block",
+            width: "32px",
+          }}
         >
           <Star color="#ccc" fill="#ccc" size={32} />
           <div
@@ -110,11 +143,45 @@ export default function Movie() {
     }
 
     while (stars.length < 5) {
-      stars.push(<Star key={stars.length} color="#ccc" fill="#ccc" size={32} />);
+      stars.push(
+        <Star key={stars.length} color="#ccc" fill="#ccc" size={32} />
+      );
     }
 
     return stars;
   };
+
+  const handleRating = (value) => {
+    setUserRating(value);
+  };
+
+  const renderInteractiveStars = () => {
+    return Array.from({ length: 10 }, (_, index) => {
+      const starValue = index + 1;
+      return (
+        <Star
+          key={starValue}
+          size={32}
+          color={starValue <= (hoverRating || userRating) ? "#FFD700" : "#ccc"}
+          fill={starValue <= (hoverRating || userRating) ? "#FFD700" : "none"}
+          onClick={() => setUserRating(starValue)}
+          onMouseEnter={() => setHoverRating(starValue)}
+          onMouseLeave={() => setHoverRating(0)}
+          style={{ cursor: "pointer", margin: "0 3px" }}
+        />
+      );
+    });
+    return <>{stars}</>;
+  };
+
+  const onSubmit = (data) => {
+    console.log("Avaliação enviada:", {
+      nota: data.rating,
+      comentario: data.review,
+    });
+    alert("Avaliação enviada com sucesso!");
+  };
+
   return (
     <main>
       <Header />
@@ -197,6 +264,76 @@ export default function Movie() {
               </a>
             </div>
           ))}
+        </div>
+
+        <div className={styles.feedbackArea}>
+          <h1 className={styles.titleFeedback}>Avalie este Filme!</h1>
+          <div>{renderInteractiveStars()}</div>
+          <h2>Sua nota: {userRating}</h2>
+          {errors.rating && (
+            <p className={styles.error}>A nota é obrigatória!</p>
+          )}
+
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className={styles.feedbackArea}
+          >
+            <input
+              type="hidden"
+              {...register("rating", { required: "A nota é obrigatória!" })}
+              value={userRating}
+            />
+
+            {errors.rating && (
+              <p className={styles.error}>{errors.rating.message}</p>
+            )}
+
+            <textarea
+              {...register("review")}
+              placeholder="Escreva sua avaliação... (Opcional)"
+              className={styles.textarea}
+              rows="5"
+            ></textarea>
+            <button
+              className={styles.button}
+              type="submit"
+              disabled={userRating === 0}
+            >
+              <h3>Enviar Avaliação</h3>
+            </button>
+          </form>
+
+          <div className={styles.comentarios}>
+            <h1>Avaliações:</h1>
+            {comentarios.length > 0 ? (
+              comentarios.map((comentario) => (
+                <div key={comentario.id} className={styles.comentarioCard}>
+                  <img
+                    src={
+                      comentario.foto
+                        ? comentario.foto
+                        : "https://via.placeholder.com/150"
+                    }
+                    alt={comentario.nome}
+                    className={styles.avataroto}
+                  />
+
+                  <div className={styles.comentarioInfo}>
+                    <h3 className={styles.name}>{comentario.nome}</h3>
+                    <div className={styles.starsAvaliation}>
+                      <h3 className={styles.nota}>Nota: {comentario.nota}</h3>
+                      <div className={styles.star}>
+                        {renderStars(comentario.nota)}
+                      </div>
+                    </div>
+                    <p>{comentario.comentario}</p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p>Nenhuma avaliação feita ainda.</p>
+            )}
+          </div>
         </div>
       </div>
       <Footer />

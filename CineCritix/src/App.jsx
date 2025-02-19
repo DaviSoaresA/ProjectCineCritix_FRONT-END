@@ -10,6 +10,7 @@ function App() {
     <BrowserRouter>
         <AppRoutes />
     </BrowserRouter>
+    // <Login />
     // <Register />
   )
 }
