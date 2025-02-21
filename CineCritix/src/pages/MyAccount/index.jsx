@@ -5,11 +5,13 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { FaEdit, FaPen } from "react-icons/fa";
 import { FiEdit3 } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
 const API_KEY = "2fcfe92f";
 
 export default function MyAccount() {
   const [movies, setMovies] = useState([]);
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -41,11 +43,16 @@ export default function MyAccount() {
     <main>
       <div className={styles.container}>
         <div className={styles.navbarAvatar}>
-          <img
-            src="https://conteudo.imguol.com.br/c/esporte/aa/2025/02/05/cano-comemora-apos-marcar-para-o-fluminense-contra-o-vasco-pelo-campeonato-carioca-2025-1738807199114_v2_450x450.jpg.webp"
-            alt="Foto usuário"
-            className={styles.avatar}
-          />
+          <div className={styles.boxAvatar}>
+            <button className={styles.avatarEdit}>
+              <FaPen />
+            </button>
+            <img
+              src="https://conteudo.imguol.com.br/c/esporte/aa/2025/02/05/cano-comemora-apos-marcar-para-o-fluminense-contra-o-vasco-pelo-campeonato-carioca-2025-1738807199114_v2_450x450.jpg.webp"
+              alt="Foto usuário"
+              className={styles.avatar}
+            />
+          </div>
           <div className={styles.avaliation}>
             <h2 className={styles.title}>Quantidade de avaliações</h2>
             <hr className={styles.verticalLine} />
@@ -131,16 +138,15 @@ export default function MyAccount() {
           <div className={styles.contain}>
             {movies.length > 0 ? (
               movies.map((movie) => (
-                <div
-                  key={movie.imdbID}
-                  className={styles.card}
-                  onClick={() => navigate(`/movie/${movie.imdbID}`)}
-                >
+                <div key={movie.imdbID} className={styles.card}>
                   <img src={movie.Poster} alt={movie.Title} />
                   <div className={styles.title}>
                     <h4>{movie.Title}</h4>
                   </div>
-                  <button className={styles.edit}>
+                  <button
+                    className={styles.edit}
+                    onClick={() => navigate(`/movie/${movie.imdbID}`)}
+                  >
                     <FaPen />
                   </button>
                 </div>

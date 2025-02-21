@@ -154,8 +154,7 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    transition: cubic-bezier(0.175, 0.885, 0.32, 1.275)2
-     0.3s;
+    transition: 0.3s;
 }
 
 .edit {
@@ -173,8 +172,50 @@
     justify-content: center;
     align-items: center;
     box-shadow: 0px 0px 20px 10px black;
+    transition: 0.3s;
+}
+
+.edit:hover {
+    color: #fff;
+    background-color: #3152B7;
+}
+
+.edit:active {
+    transform: scale(0.9);
 }
 
 .card:hover {
     transform: scale(1.05);
 }
+
+.boxAvatar {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.avatarEdit {
+    position: absolute;
+    top: 0; 
+    right:14vh;
+    width: 7vh;
+    height: 7vh;
+    background-color: #fff;
+    color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.avatarEdit:hover {
+    color: #fff;
+    background-color: #3152B7;
+    transform: scale(1.1);
+    box-shadow: 0px 0px 40px 10px black;
+}
+

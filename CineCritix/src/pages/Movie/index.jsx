@@ -20,12 +20,21 @@ export default function Movie() {
   const [userRating, setUserRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [comentarios, setComentarios] = useState([]);
+  const [charCount, setcharCount] = useState(0);
+  const charLimit = 500;
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
   } = useForm();
+
+  const handleChange = (e) => {
+    const text = e.target.value;
+    if (text.length <= charLimit) {
+      setcharCount(text.length);
+    }
+  }
 
   useEffect(() => {
     setValue("rating", userRating);
@@ -293,7 +302,10 @@ export default function Movie() {
               placeholder="Escreva sua avaliação... (Opcional)"
               className={styles.textarea}
               rows="5"
+              maxLength={500}
+              onChange={handleChange}
             ></textarea>
+            <p>{charCount} / {charLimit} caracteres</p>
             <button
               className={styles.button}
               type="submit"
