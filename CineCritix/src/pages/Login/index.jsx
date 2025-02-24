@@ -11,6 +11,7 @@ import * as styles from "../Login/Login.module.css";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { login } from "../../service/api";
 
 const supabase = createClient(
   "https://pyobmpozoesyxoxsfgbq.supabase.co",
@@ -27,6 +28,10 @@ export default function Login() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [user, setUser] = useState(null);
+  const [Loading, setLoading] = useState(false);
+  const [sucess, setSucess] = useState(false);
+  const [error, setError] = useState(false);
+  const navigate = useNavigation();
 
   useEffect(() => {
     const getUser = async () => {
@@ -58,21 +63,19 @@ export default function Login() {
   };
 
   const onSubmit = async (data) => {
-    const credenciais = {
-      email: data.email,
-      password: data.password
-    };
-    
-    const response = await axios.post("http://localhost:8080/login", credenciais);
-
-    if (response.status == 200) {
-      const token = response.headers["Authorization"];
-      localStorage.setItem("token", token);
-      navigation("/");
-    } else if(response.status >= 400 || response.status < 500) {
-      alert("Erro nas credenciais");
-    } else {
-      alert("Erro de conexão");
+    setLoading(true);
+    try {
+      const response = await login(data);
+    if (response.status === 200) {
+      setLoading(false);
+      setSucess(true);
+      setError(false)
+      setTimeout(() => {
+        navigate
+      },4000)
+    }
+    } catch (error) {
+     setError(true); 
     }
   };
 
@@ -142,7 +145,6 @@ export default function Login() {
                   <p className={styles.error}>{errors.email.message}</p>
                 )}
               </div>
-
               <div style={{ position: "relative" }}>
                 <input
                   className={styles.textInput}
@@ -176,7 +178,6 @@ export default function Login() {
                   <p className={styles.error}>{errors.password.message}</p>
                 )}
               </div>
-
               <ButtonLogin name={"Entrar"} type="submit" />
             </form>
             <p>
