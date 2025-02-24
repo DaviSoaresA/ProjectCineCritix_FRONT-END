@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import * as styles from "../Home/Home.module.css";
 import Header from "../../components/Header";
@@ -11,6 +12,7 @@ import axios from "axios";
 import { Autoplay, EffectCoverflow, Pagination } from "swiper/modules";
 import Footer from "../../components/Footer";
 import { useNavigate } from "react-router-dom";
+import { getAllMovies } from "../../service/api";
 
 const API_KEY = "2fcfe92f";
 
@@ -23,41 +25,41 @@ export default function Home() {
   const [movies, setMovies] = useState([]);
   const navigate = useNavigate();
 
-  const getMovie = async (query) => {
-    try {
-      const response = await axios.get(
-        `https://www.omdbapi.com/?apikey=${API_KEY}&s=${query}`
-      );
+  // const getMovie = async (query) => {
+  //   try {
+  //     const response = await axios.get(
+  //       `https://www.omdbapi.com/?apikey=${API_KEY}&s=${query}`
+  //     );
 
-      if (response.data.Search) {
-        setMovie(response.data.Search);
+  //     if (response.data.Search) {
+  //       setMovie(response.data.Search);
+  //     } else {
+  //       setMovie([]);
+  //     }
+  //   } catch (error) {
+  //     alert("Erro ao buscar filmes. Tente novamente.");
+  //   }
+  // };
+
+  const getMovies = async () => {
+    try {
+      const response = await getAllMovies();
+
+      if (response.status === 200) {
+        setMovie(response.data);
+
       } else {
         setMovie([]);
+        console.error("erro ao pegar filmes");
+        
       }
     } catch (error) {
-      alert("Erro ao buscar filmes. Tente novamente.");
-    }
-  };
-
-  const getMovies = async (query) => {
-    try {
-      const response = await axios.get(
-        `http://www.omdbapi.com/?s=movie&page=1&apikey=${API_KEY}`
-      );
-
-      if (response.data.Search) {
-        setMovies(response.data.Search);
-        console.log(response.data.Search);
-      } else {
-        setMovies([]);
-      }
-    } catch (error) {
-      alert("Erro ao buscar filmes. Tente novamente.");
+      console.error("Erro ao buscar filmes. Tente novamente.");
     }
   };
 
   useEffect(() => {
-    getMovie("Star Wars");
+    // getMovie("Star Wars");
     getMovies();
   }, []);
 
