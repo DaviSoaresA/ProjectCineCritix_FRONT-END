@@ -1,59 +1,132 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+
+import React, { useEffect, useState } from "react";
 import * as styles from "../Home/Home.module.css";
+import Header from "../../components/Header";
+import { Swiper, SwiperSlide } from "swiper/react";
+
+import "swiper/css";
+import "swiper/css/effect-coverflow";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
+import axios from "axios";
+import { Autoplay, EffectCoverflow, Pagination } from "swiper/modules";
+import Footer from "../../components/Footer";
+import { useNavigate } from "react-router-dom";
+import { getAllMovies } from "../../service/api";
+
+const API_KEY = "2fcfe92f";
+
+// import { EffectCoverflow, Pagination, Navigation } from "swiper";
+
+// http://www.omdbapi.com/2fcfe92f
 
 export default function Home() {
+  const [movie, setMovie] = useState([]);
   const [movies, setMovies] = useState([]);
-  const [page, setPage] = useState(1);
+  const navigate = useNavigate();
 
-  async function getMovies() {
+  // const getMovie = async (query) => {
+  //   try {
+  //     const response = await axios.get(
+  //       `https://www.omdbapi.com/?apikey=${API_KEY}&s=${query}`
+  //     );
+
+  //     if (response.data.Search) {
+  //       setMovie(response.data.Search);
+  //     } else {
+  //       setMovie([]);
+  //     }
+  //   } catch (error) {
+  //     alert("Erro ao buscar filmes. Tente novamente.");
+  //   }
+  // };
+
+  const getMovies = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:8080/`
-      );
+      const response = await getAllMovies();
 
-      if (response.data.Response === "True") {
-        setMovies((prevMovies) => [...prevMovies, ...response.data.Search]);
+      if (response.status === 200) {
+        setMovie(response.data);
+
+      } else {
+        setMovie([]);
+        console.error("erro ao pegar filmes");
+        
       }
     } catch (error) {
-      console.error("Error fetching movies:", error);
+      console.error("Erro ao buscar filmes. Tente novamente.");
     }
-  }
+  };
 
   useEffect(() => {
+    // getMovie("Star Wars");
     getMovies();
-  }, [page]);
+  }, []);
 
   return (
-    <div className={styles.container}>
-      <div>
-        <h1>Movies</h1>
-        <p>Welcome to CineCritix!</p>
+    <main className={styles.container}>
+      <Header
+        box="filmes"
+        ColorMovie={{ color: "#3152B7" }}
+        onSearch={"movies"}
+      />
+      <Swiper
+        effect="coverflow"
+        grabCursor={true}
+        loop={true}
+        centeredSlides={true}
+        slidesPerView={3}
+        spaceBetween={-50}
+        autoplay={{
+          delay: 3000,
+          disableOnInteraction: false,
+        }}
+        coverflowEffect={{
+          rotate: 5,
+          stretch: 0,
+          depth: 150,
+          modifier: 2,
+          slideShadows: true,
+        }}
+        modules={[EffectCoverflow, Autoplay]}
+        className={styles.swiperContainer}
+      >
+        {movie.length > 0 ? (
+          movie.map((movie, index) => (
+            <SwiperSlide key={index} className={styles.swiperSlide} onClick={() => navigate(`/movie/${movie.imdbID}`)}>
+              <img
+                src={
+                  movie.Poster !== "N/A"
+                    ? movie.Poster
+                    : "https://via.placeholder.com/300"
+                }
+                alt={movie.Title}
+                className={styles.poster}
+              />
+              <h2>
+                {movie.Title}
+              </h2>
+            </SwiperSlide>
+          ))
+        ) : (
+          <p className={styles.noResults}>Nenhum filme encontrado.</p>
+        )}
+      </Swiper>
+      <div className={styles.contain}>
         {movies.length > 0 ? (
           movies.map((movie) => (
-            <div key={movie.imdbID} className={styles.movieCard}>
-              <h2>{movie.Title}</h2>
-              <img
-                src={movie.Poster}
-                onError={(e) => (e.target.src = "/placeholder.png")}
-                alt={`Cover of the movie ${movie.Title}`}
-                style={{ width: "200px", height: "auto", marginBottom: "10px" }}
-              />
-              <p>
-                <strong>Year:</strong> {movie.Year}
-              </p>
-              <p>
-                <strong>Type:</strong> {movie.Type}
-              </p>
+            <div key={movie.imdbID} className={styles.card} onClick={() => navigate(`/movie/${movie.imdbID}`)}>
+              <img src={movie.Poster} alt={movie.Title} />
+              <div className={styles.title}>
+                <h4>{movie.Title}</h4>
+              </div>
             </div>
           ))
         ) : (
-          <p>Loading movies...</p>
+          <p>Carregando filmes...</p>
         )}
-        <button onClick={() => setPage((prevPage) => prevPage + 1)}>
-          Load More
-        </button>
       </div>
-    </div>
+      <Footer />
+    </main>
   );
 }
