@@ -12,10 +12,22 @@ export default function Register() {
     handleSubmit,
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log("Form Data:", data);
-    alert("Conta criada com sucesso")
-  };
+    const onSubmit = async (data) => {
+        setLoading(true);
+        try {
+          const response = await Register(data);
+        if (response.status === 200) {
+          setLoading(false);
+          setSucess(true);
+          setError(false)
+          setTimeout(() => {
+            navigate
+          },4000)
+        }
+        } catch (error) {
+         setError(true); 
+        }
+      };
 
   return (
     <main className={styles.container}>
