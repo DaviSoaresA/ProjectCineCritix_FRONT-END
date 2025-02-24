@@ -9,6 +9,8 @@ import ButtonLogin from "../../components/ButtonLogin";
 import "../../Global.css";
 import * as styles from "../Login/Login.module.css";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import { login } from "../../service/api";
 
 const supabase = createClient(
@@ -17,6 +19,7 @@ const supabase = createClient(
 );
 
 export default function Login() {
+  const navigation = useNavigate();
   const {
     register,
     handleSubmit,
@@ -178,7 +181,13 @@ export default function Login() {
               <ButtonLogin name={"Entrar"} type="submit" />
             </form>
             <p>
-              Não tem uma conta? <a href="">Registre-se</a>
+              Não tem uma conta?{" "}
+              <button
+                className={styles.register}
+                onClick={() => navigation("/cadastrar")}
+              >
+                Registre-se
+              </button>
             </p>
           </div>
         </div>
