@@ -63,11 +63,16 @@ export default function Home() {
 
   return (
     <main className={styles.container}>
-      <Header
-        box="filmes"
-        ColorMovie={{ color: "#3152B7" }}
-        onSearch={"movies"}
-      />
+      <Header />
+      <div className={styles.header}>
+        <div className={styles.navigation}>
+          <div className={styles.active}>
+            <h2>Filmes</h2>
+          </div>
+          <h2>Séries</h2>
+          <h2 onClick={() => navigate("/minhaConta")}>Minha Conta</h2>
+        </div>
+      </div>
       <Swiper
         effect="coverflow"
         grabCursor={true}
@@ -91,7 +96,11 @@ export default function Home() {
       >
         {movie.length > 0 ? (
           movie.map((movie, index) => (
-            <SwiperSlide key={index} className={styles.swiperSlide} onClick={() => navigate(`/movie/${movie.imdbID}`)}>
+            <SwiperSlide
+              key={index}
+              className={styles.swiperSlide}
+              onClick={() => navigate(`/movie/${movie.imdbID}`)}
+            >
               <img
                 src={
                   movie.Poster !== "N/A"
@@ -101,9 +110,7 @@ export default function Home() {
                 alt={movie.Title}
                 className={styles.poster}
               />
-              <h2>
-                {movie.Title}
-              </h2>
+              <h2>{movie.Title}</h2>
             </SwiperSlide>
           ))
         ) : (
@@ -113,7 +120,11 @@ export default function Home() {
       <div className={styles.contain}>
         {movies.length > 0 ? (
           movies.map((movie) => (
-            <div key={movie.imdbID} className={styles.card} onClick={() => navigate(`/movie/${movie.imdbID}`)}>
+            <div
+              key={movie.imdbID}
+              className={styles.card}
+              onClick={() => navigate(`/movie/${movie.imdbID}`)}
+            >
               <img src={movie.Poster} alt={movie.Title} />
               <div className={styles.title}>
                 <h4>{movie.Title}</h4>
