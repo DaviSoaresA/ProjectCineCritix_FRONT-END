@@ -22,7 +22,7 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    gap: 12vh;
+    gap: 8vh;
 }
 
 .avatar {
@@ -69,22 +69,25 @@
     border-radius: 10px;
 }
 
-.box{
-    position: absolute;
-    right: 0;
+.box {
+    margin-left: 30%;
     width: 70%;
-    height: 100%;
+    min-height: 100vh;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: flex-start;
     align-items: center;
+    flex-grow: 1;
 }
 
 .form {
+    margin-top: 22vh;
     width: 85%;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
+    margin-bottom: 10vh;
 }
 
 .input {
@@ -94,6 +97,12 @@
     flex-direction: column;
     justify-content: center;
     align-items: start;
+}
+
+.input:last-child {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .textInput {
@@ -110,7 +119,7 @@
 }
 
 .buttonSave {
-    width: 35%;
+    width: 90%;
     height: 8vh;
     margin-top: 30px;
     display: flex;
@@ -121,4 +130,101 @@
     border: none;
     border-radius: 10px;
     cursor: pointer;
+}
+
+.contain {
+    /* border: 3px solid #fff; */
+    width: 80%;
+    height: auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px 40px;
+    margin-top: 10vh;
+}
+
+.card img{
+    width: 200px;
+    border-radius: 20px;
+}
+
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.edit {
+    all: unset;
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: #fff;
+    color: #000;
+    width: 5vh;
+    height: 5vh;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0px 0px 20px 10px black;
+    transition: 0.3s;
+}
+
+.edit:hover {
+    color: #fff;
+    background-color: #3152B7;
+}
+
+.edit:active {
+    transform: scale(0.9);
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+.boxAvatar {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.avatarEdit {
+    position: absolute;
+    top: 0; 
+    right:14vh;
+    width: 7vh;
+    height: 7vh;
+    background-color: #fff;
+    color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.avatarEdit:hover {
+    color: #fff;
+    background-color: #3152B7;
+    transform: scale(1.1);
+    box-shadow: 0px 0px 40px 0px black;
+}
+
+.back {
+    color: #fff;
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    cursor: pointer;
+    z-index: 999;
+    font-size: 32px;
 }

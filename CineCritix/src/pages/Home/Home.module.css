@@ -10,6 +10,46 @@
     color: #fff;
 }
 
+.header {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 11rem;
+  color: #fff;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navigation {
+  display: flex;
+  position: absolute;
+  width: 50%;
+  height: 11rem;
+  align-items: end;
+  justify-content: space-around;
+  font-weight: 900;
+  color: #fff;
+  transition: 0.3s;
+}
+
+.navigation h2:hover {
+  cursor: pointer;
+  filter: brightness(0.8);
+  transition: 0.3s;
+}
+
+.active {
+  background-color: #fff;
+  padding: 0px 30px;
+  border-radius: 30px 30px 0px 0px;
+}
+
+.active h2{
+  color: #3152B7;
+}
+
 ::-webkit-scrollbar {
   width: 13px;
   height: 10px;
