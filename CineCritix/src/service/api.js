@@ -30,7 +30,7 @@ export async function login (data){
         console.log("erro na requisicao " + error.message);
     }
 }
-export async function login (data){
+export async function cadastro (data){
     try {
         const response = await api.post(`/usuarios`, {
             data

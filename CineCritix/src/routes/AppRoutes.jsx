@@ -11,7 +11,7 @@ export default function AppRoutes() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/movie/:id" element={<Movie />} />
-        <Route path="/Login" element={<Login />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/cadastrar" element={<Register />} />
         <Route path="/minhaConta" element={<MyAccount />} />
       </Routes>
