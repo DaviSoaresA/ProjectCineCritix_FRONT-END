@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import * as styles from "../Home/Home.module.css";
 import Header from "../../components/Header";
@@ -12,7 +11,6 @@ import axios from "axios";
 import { Autoplay, EffectCoverflow, Pagination } from "swiper/modules";
 import Footer from "../../components/Footer";
 import { useNavigate } from "react-router-dom";
-import { getAllMovies } from "../../service/api";
 
 const API_KEY = "2fcfe92f";
 
@@ -25,51 +23,56 @@ export default function Home() {
   const [movies, setMovies] = useState([]);
   const navigate = useNavigate();
 
-  // const getMovie = async (query) => {
-  //   try {
-  //     const response = await axios.get(
-  //       `https://www.omdbapi.com/?apikey=${API_KEY}&s=${query}`
-  //     );
-
-  //     if (response.data.Search) {
-  //       setMovie(response.data.Search);
-  //     } else {
-  //       setMovie([]);
-  //     }
-  //   } catch (error) {
-  //     alert("Erro ao buscar filmes. Tente novamente.");
-  //   }
-  // };
-
-  const getMovies = async () => {
+  const getMovie = async (query) => {
     try {
-      const response = await getAllMovies();
+      const response = await axios.get(
+        `https://www.omdbapi.com/?apikey=${API_KEY}&s=${query}`
+      );
 
-      if (response.status === 200) {
-        setMovie(response.data);
-
+      if (response.data.Search) {
+        setMovie(response.data.Search);
       } else {
         setMovie([]);
-        console.error("erro ao pegar filmes");
-        
       }
     } catch (error) {
-      console.error("Erro ao buscar filmes. Tente novamente.");
+      alert("Erro ao buscar filmes. Tente novamente.");
+    }
+  };
+
+  const getMovies = async (query) => {
+    try {
+      const response = await axios.get(
+        `http://www.omdbapi.com/?s=movie&page=1&apikey=${API_KEY}`
+      );
+
+      if (response.data.Search) {
+        setMovies(response.data.Search);
+        console.log(response.data.Search);
+      } else {
+        setMovies([]);
+      }
+    } catch (error) {
+      alert("Erro ao buscar filmes. Tente novamente.");
     }
   };
 
   useEffect(() => {
-    // getMovie("Star Wars");
+    getMovie("Star Wars");
     getMovies();
   }, []);
 
   return (
     <main className={styles.container}>
-      <Header
-        box="filmes"
-        ColorMovie={{ color: "#3152B7" }}
-        onSearch={"movies"}
-      />
+      <Header />
+      <div className={styles.header}>
+        <div className={styles.navigation}>
+          <div className={styles.active}>
+            <h2>Filmes</h2>
+          </div>
+          <h2>Séries</h2>
+          <h2 onClick={() => navigate("/minhaConta")}>Minha Conta</h2>
+        </div>
+      </div>
       <Swiper
         effect="coverflow"
         grabCursor={true}
@@ -93,7 +96,11 @@ export default function Home() {
       >
         {movie.length > 0 ? (
           movie.map((movie, index) => (
-            <SwiperSlide key={index} className={styles.swiperSlide} onClick={() => navigate(`/movie/${movie.imdbID}`)}>
+            <SwiperSlide
+              key={index}
+              className={styles.swiperSlide}
+              onClick={() => navigate(`/movie/${movie.imdbID}`)}
+            >
               <img
                 src={
                   movie.Poster !== "N/A"
@@ -103,9 +110,7 @@ export default function Home() {
                 alt={movie.Title}
                 className={styles.poster}
               />
-              <h2>
-                {movie.Title}
-              </h2>
+              <h2>{movie.Title}</h2>
             </SwiperSlide>
           ))
         ) : (
@@ -115,7 +120,11 @@ export default function Home() {
       <div className={styles.contain}>
         {movies.length > 0 ? (
           movies.map((movie) => (
-            <div key={movie.imdbID} className={styles.card} onClick={() => navigate(`/movie/${movie.imdbID}`)}>
+            <div
+              key={movie.imdbID}
+              className={styles.card}
+              onClick={() => navigate(`/movie/${movie.imdbID}`)}
+            >
               <img src={movie.Poster} alt={movie.Title} />
               <div className={styles.title}>
                 <h4>{movie.Title}</h4>

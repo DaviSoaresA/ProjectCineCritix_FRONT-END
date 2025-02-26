@@ -1,10 +1,12 @@
-
 import React from "react";
 import * as styles from "../Register/Register.module.css";
 import { useForm } from "react-hook-form";
 import ButtonLogin from "../../components/ButtonLogin";
+import { cadastro } from "../../service/api";
+import { useNavigate } from "react-router-dom";
 
 export default function Register() {
+  const navigation = useNavigate();
   const [showPassword, setShowPassword] = React.useState(false);
   const {
     register,
@@ -12,22 +14,26 @@ export default function Register() {
     handleSubmit,
   } = useForm();
 
-    const onSubmit = async (data) => {
-        setLoading(true);
-        try {
-          const response = await Register(data);
-        if (response.status === 200) {
-          setLoading(false);
-          setSucess(true);
-          setError(false)
-          setTimeout(() => {
-            navigate
-          },4000)
-        }
-        } catch (error) {
-         setError(true); 
-        }
-      };
+  const onSubmit = async (data) => {
+    const credentials = {
+      fullName: data.nome,
+      email: data.email,
+      password: data.senha,
+      confirmPassword: data.confirmaSenha,
+      avatar: "bharzmna59bzd1e4uqyk"
+    }
+    try {
+      const response = await cadastro(credentials);
+      if (response.status == 200) {
+        setTimeout(() => {
+          navigation("/login")
+        }, 4000)
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+
+  };
 
   return (
     <main className={styles.container}>

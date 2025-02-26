@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "http://localhost:8080";
+const API = "projectcinecritixback-end-production.up.railway.app";
 
 export const api = axios.create({
   baseURL: API,
@@ -30,7 +30,7 @@ export async function login (data){
         console.log("erro na requisicao " + error.message);
     }
 }
-export async function login (data){
+export async function cadastro (data){
     try {
         const response = await api.post(`/usuarios`, {
             data

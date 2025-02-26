@@ -31,7 +31,6 @@ export default function Login() {
   const [Loading, setLoading] = useState(false);
   const [sucess, setSucess] = useState(false);
   const [error, setError] = useState(false);
-  const navigate = useNavigation();
 
   useEffect(() => {
     const getUser = async () => {
@@ -63,15 +62,19 @@ export default function Login() {
   };
 
   const onSubmit = async (data) => {
+    const credentials = {
+      email: data.email,
+      password: data.password
+    }
     setLoading(true);
     try {
-      const response = await login(data);
+      const response = await login(credentials);
     if (response.status === 200) {
       setLoading(false);
       setSucess(true);
       setError(false)
       setTimeout(() => {
-        navigate
+        navigation("/")
       },4000)
     }
     } catch (error) {
