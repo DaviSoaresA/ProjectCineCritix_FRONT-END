@@ -6,6 +6,7 @@ import axios from "axios";
 import { FaEdit, FaPen } from "react-icons/fa";
 import { FiEdit3 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import { BiArrowBack } from "react-icons/bi";
 
 const API_KEY = "2fcfe92f";
 
@@ -43,6 +44,11 @@ export default function MyAccount() {
     <main>
       <div className={styles.container}>
         <div className={styles.navbarAvatar}>
+          <div className={styles.positionBack}>
+            <button className={styles.back} onClick={() => navigate("/")}>
+              <BiArrowBack />
+            </button>
+          </div>
           <div className={styles.boxAvatar}>
             <button className={styles.avatarEdit}>
               <FaPen />

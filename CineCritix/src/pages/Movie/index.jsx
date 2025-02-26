@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { Star, StarHalf } from "lucide-react";
 import styles from "../Movie/Movie.module.css";
@@ -21,6 +21,7 @@ export default function Movie() {
   const [hoverRating, setHoverRating] = useState(0);
   const [comentarios, setComentarios] = useState([]);
   const [charCount, setcharCount] = useState(0);
+  const navigate = useNavigate();
   const charLimit = 500;
   const {
     register,
@@ -34,7 +35,7 @@ export default function Movie() {
     if (text.length <= charLimit) {
       setcharCount(text.length);
     }
-  }
+  };
 
   useEffect(() => {
     setValue("rating", userRating);
@@ -183,17 +184,35 @@ export default function Movie() {
     return <>{stars}</>;
   };
 
-  const onSubmit = (data) => {
-    console.log("Avaliação enviada:", {
+  const onSubmit = async (data) => {
+    const newComentario = {
+      nome: data.nome,
       nota: data.rating,
       comentario: data.review,
-    });
+      foto: "https://imgs.search.brave.com/IgDJf1N6t1_bgUra7DI8aW1nxPQhyvzJjjLpjNYXs7M/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/YmFuZC51b2wuY29t/LmJyL2ltYWdlLzIw/MjUvMDIvMDUvZ2Vy/bWFuLWNhbm8tY29t/ZW1vcmEtZ29sLWNv/bnRyYS1vLXZhc2Nv/LTIzNTlfODAweDQ1/MC53ZWJw",
+    }
+    
+    try {
+      const response = await axios.post("https://6750549b69dc1669ec1aa14e.mockapi.io/comentario", newComentario);
+      setComentarios([...comentarios, response.data]);
+    } catch (error) {
+      console.error("Erro ao enviar comentário:", error);
+    }
     alert("Avaliação enviada com sucesso!");
   };
 
   return (
     <main>
       <Header />
+      <div className={styles.header}>
+        <div className={styles.navigation}>
+          <div className={styles.active}>
+            <h2  onClick={() => navigate("/")}>Filmes</h2>
+          </div>
+          <h2>Séries</h2>
+          <h2 onClick={() => navigate("/minhaConta")}>Minha Conta</h2>
+        </div>
+      </div>
       {backdrop ? (
         <div
           className={styles.backdrop}
@@ -305,7 +324,9 @@ export default function Movie() {
               maxLength={500}
               onChange={handleChange}
             ></textarea>
-            <p>{charCount} / {charLimit} caracteres</p>
+            <p>
+              {charCount} / {charLimit} caracteres
+            </p>
             <button
               className={styles.button}
               type="submit"
