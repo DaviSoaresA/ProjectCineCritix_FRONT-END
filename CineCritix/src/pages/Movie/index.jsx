@@ -3,7 +3,7 @@ import axios from "axios";
 import { Star } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import styles from "../Movie/Movie.module.css";
