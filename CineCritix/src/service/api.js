@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "http://localhost:8080";
+const API = "projectcinecritixback-end-production.up.railway.app";
 
 export const api = axios.create({
   baseURL: API,
