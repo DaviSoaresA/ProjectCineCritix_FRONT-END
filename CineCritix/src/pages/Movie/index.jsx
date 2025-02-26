@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+
 import axios from "axios";
-import { Star, StarHalf } from "lucide-react";
-import styles from "../Movie/Movie.module.css";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
+import { Star } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { div, p } from "framer-motion/client";
+import { useParams } from "react-router-dom";
+import Footer from "../../components/Footer";
+import Header from "../../components/Header";
+import styles from "../Movie/Movie.module.css";
 
 const API_KEY = "a1597f569dafd7069822328e2bd0d446";
 const API_KEY2 = "2fcfe92f";
