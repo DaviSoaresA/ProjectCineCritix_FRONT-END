@@ -20,15 +20,14 @@ export default function Register() {
       email: data.email,
       password: data.senha,
       confirmPassword: data.confirmaSenha,
-      avatar: "bharzmna59bzd1e4uqyk"
+      avatar: "bharzmna59bzd1e4uqyk",
+      role: "USER"
     }
     try {
       const response = await cadastro(credentials);
-      if (response.status == 200) {
-        setTimeout(() => {
-          navigation("/login")
-        }, 4000)
-      }
+      setTimeout(() => {
+         navigation("/login")
+      }, 4000)
     } catch (error) {
       alert(error.message);
     }
