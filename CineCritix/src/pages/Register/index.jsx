@@ -20,8 +20,7 @@ export default function Register() {
       email: data.email,
       password: data.senha,
       confirmPassword: data.confirmaSenha,
-      avatar: "bharzmna59bzd1e4uqyk",
-      role: "USER"
+      avatar: "bharzmna59bzd1e4uqyk"
     }
     try {
       const response = await cadastro(credentials);
@@ -31,7 +30,6 @@ export default function Register() {
     } catch (error) {
       alert(error.message);
     }
-
   };
 
   return (
