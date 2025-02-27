@@ -199,3 +199,45 @@ h2 {
   text-align: center;
 }
 
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 20px 0;
+  margin-bottom: 60px;
+}
+
+.pageButton {
+  background-color: transparent;
+  color: white;
+  border: 1px solid white;
+  border-radius: 50%;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.pageButton:disabled {
+  background-color: #222;
+  cursor: not-allowed;
+}
+
+.pageButton.active {
+  background-color: white;
+  color: black;
+}
+
+.pageButton:hover {
+  background-color: white;
+  color: black;
+}
+
+.pageButton2{
+  all: unset;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.pageButton2:hover {
+  transform: scale(1.5);
+}
