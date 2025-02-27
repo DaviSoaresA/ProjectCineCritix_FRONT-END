@@ -24,15 +24,12 @@ export default function Register() {
     }
     try {
       const response = await cadastro(credentials);
-      if (response.status == 200) {
-        setTimeout(() => {
-          navigation("/login")
-        }, 4000)
-      }
+      setTimeout(() => {
+         navigation("/login")
+      }, 4000)
     } catch (error) {
       alert(error.message);
     }
-
   };
 
   return (

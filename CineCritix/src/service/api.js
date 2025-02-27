@@ -17,10 +17,10 @@ export const getAllMovies = async () => {
 };
 
 export async function login(data) {
+  console.log(data);
+  
   try {
-    const response = await api.post(`/login`, {
-      data,
-    });
+    const response = await api.post(`/login`, data);
     if (response.status === 200) {
       const token = response.headers["authorization"];
       localStorage.setItem("token", token);
@@ -33,10 +33,8 @@ export async function login(data) {
 
 export async function cadastro(data) {
   try {
-    const response = await api.post(`/usuarios`, {
-      data,
-    });
-    if (response.status === 200) {
+    const response = await api.post(`/users`, data);
+    if (response.status === 201) {
       return response;
     }
   } catch (error) {
