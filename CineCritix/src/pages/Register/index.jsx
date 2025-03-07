@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import ButtonLogin from "../../components/ButtonLogin";
 import { cadastro } from "../../service/api";
 import { useNavigate } from "react-router-dom";
+import Faixa1 from "../../assets/Faixa1.jpeg";
+import Faixa2 from "../../assets/Faixa2.jpeg";
 
 export default function Register() {
   const navigation = useNavigate();
@@ -20,13 +22,13 @@ export default function Register() {
       email: data.email,
       password: data.senha,
       confirmPassword: data.confirmaSenha,
-      avatar: "bharzmna59bzd1e4uqyk"
-    }
+      avatar: "bharzmna59bzd1e4uqyk",
+    };
     try {
       const response = await cadastro(credentials);
       setTimeout(() => {
-         navigation("/login")
-      }, 4000)
+        navigation("/login");
+      }, 4000);
     } catch (error) {
       alert(error.message);
     }
@@ -34,10 +36,11 @@ export default function Register() {
 
   return (
     <main className={styles.container}>
+      <img src={Faixa1} alt="filmes" className={styles.faixa1} />
+      <div className={styles.faixaLeft} />
+      <img src={Faixa2} alt="filmes" className={styles.faixa2} />
+      <div className={styles.faixaRight} />
       <h1 className={styles.title}>Cadastre-se</h1>
-      <div className={styles.box}>
-        <img src="" alt="" />
-      </div>
       <div className={styles.box2}></div>
       <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
         <input
@@ -78,7 +81,9 @@ export default function Register() {
             required: "Confirma Senha é obrigatória",
           })}
         />
-        {errors.confirmaSenha && <p className={styles.error}>{errors.confirmaSenha.message}</p>}
+        {errors.confirmaSenha && (
+          <p className={styles.error}>{errors.confirmaSenha.message}</p>
+        )}
 
         <button className={styles.button} type="submit">
           Cadastrar
