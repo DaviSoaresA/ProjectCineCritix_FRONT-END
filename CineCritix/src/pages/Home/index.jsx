@@ -38,7 +38,7 @@ export default function Home() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    setIsAuthenticated(!!token);
+    setIsAuthenticated(token);
     fetchMovies();
   }, []);
 
