@@ -27,9 +27,13 @@ export default function Register() {
     }
     try {
       const response = await cadastro(credentials);
-      setTimeout(() => {
-        navigation("/login");
-      }, 4000);
+      if (response.status === 201) {
+        setTimeout(() => {
+           navigation("/login")
+        }, 1500);
+      } else {
+        alert("Erro ao fazer cadastro");
+      }
     } catch (error) {
       alert(error.message);
     }
