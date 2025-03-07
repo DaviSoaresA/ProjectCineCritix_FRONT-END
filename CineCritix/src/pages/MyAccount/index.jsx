@@ -7,6 +7,7 @@ import { FaEdit, FaPen } from "react-icons/fa";
 import { FiEdit3 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { BiArrowBack } from "react-icons/bi";
+import { getUserById } from "../../service/api";
 
 const API_KEY = "2fcfe92f";
 
@@ -37,8 +38,15 @@ export default function MyAccount() {
       }
     };
 
+    getUserById();
+
     getMovies();
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/");
+  };
 
   return (
     <main>
@@ -65,7 +73,7 @@ export default function MyAccount() {
             <h1 className={styles.quant}>150</h1>
           </div>
 
-          <button className={styles.button}>
+          <button className={styles.button} onClick={handleLogout}>
             <h2>Sair</h2>
           </button>
         </div>

@@ -1,4 +1,3 @@
-
 import axios from "axios";
 import { Star } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -54,57 +53,51 @@ export default function Movie() {
       }
     };
 
-    const getMovieById = async (imdbID) => {
+    const fetchMovie = async () => {
       try {
-        const omdbResponse = await axios.get(
-          `https://www.omdbapi.com/?i=${imdbID}&apikey=${API_KEY2}`
-        );
+        const movieData = await getMovieById(id);
 
-        if (!omdbResponse.data || omdbResponse.data.Response === "False") {
-          console.error("Filme não encontrado na OMDb.");
+        if (!movieData || !movieData.tmdbId) {
+          console.error("Filme não encontrado na API ou sem tmdbId.");
           return;
         }
 
+        setMovie(movieData);
+
+        // Buscar dados adicionais do TMDb
         const tmdbResponse = await axios.get(
-          `https://api.themoviedb.org/3/find/${imdbID}`,
-          { params: { api_key: API_KEY, external_source: "imdb_id" } }
+          `https://api.themoviedb.org/3/movie/${movieData.tmdbId}`,
+          { params: { api_key: API_KEY } }
         );
 
-        if (
-          tmdbResponse.data.movie_results &&
-          tmdbResponse.data.movie_results.length > 0
-        ) {
-          const movieData = tmdbResponse.data.movie_results[0];
-
-          if (movieData.backdrop_path) {
-            setBackdrop(
-              `https://image.tmdb.org/t/p/original${movieData.backdrop_path}`
-            );
-          }
-
-          const trailerResponse = await axios.get(
-            `https://api.themoviedb.org/3/movie/${movieData.id}/videos`,
-            { params: { api_key: API_KEY } }
+        if (tmdbResponse.data.backdrop_path) {
+          setBackdrop(
+            `https://image.tmdb.org/t/p/original${tmdbResponse.data.backdrop_path}`
           );
-
-          if (trailerResponse.data.results.length > 0) {
-            const trailer = trailerResponse.data.results.find(
-              (video) => video.type === "Trailer" && video.site === "YouTube"
-            );
-            if (trailer) {
-              setTrailerUrl(`https://www.youtube.com/watch?v=${trailer.key}`);
-            }
-          }
-
-          const castResponse = await axios.get(
-            `https://api.themoviedb.org/3/movie/${movieData.id}/credits`,
-            { params: { api_key: API_KEY } }
-          );
-
-          setCast(castResponse.data.cast.slice(0, 10));
         }
 
-        setMovie(omdbResponse.data);
+        // Buscar trailer do filme
+        const trailerResponse = await axios.get(
+          `https://api.themoviedb.org/3/movie/${movieData.tmdbId}/videos`,
+          { params: { api_key: API_KEY } }
+        );
+
+        if (trailerResponse.data.results.length > 0) {
+          const trailer = trailerResponse.data.results.find(
+            (video) => video.type === "Trailer" && video.site === "YouTube"
+          );
+          if (trailer) {
+            setTrailerUrl(`https://www.youtube.com/watch?v=${trailer.key}`);
+          }
+        }
+
+        // Buscar elenco do filme
+        const castResponse = await axios.get(
+          `https://api.themoviedb.org/3/movie/${movieData.tmdbId}/credits`,
+          { params: { api_key: API_KEY } }
+        );
+
+        setCast(castResponse.data.cast.slice(0, 10));
       } catch (error) {
         console.error("Erro ao buscar detalhes do filme:", error);
       }
@@ -113,7 +106,7 @@ export default function Movie() {
     fetchComentarios();
 
     if (id) {
-      getMovieById(id);
+      fetchMovie();
     }
   }, [id]);
 
@@ -190,10 +183,13 @@ export default function Movie() {
       nota: data.rating,
       comentario: data.review,
       foto: "https://imgs.search.brave.com/IgDJf1N6t1_bgUra7DI8aW1nxPQhyvzJjjLpjNYXs7M/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/YmFuZC51b2wuY29t/LmJyL2ltYWdlLzIw/MjUvMDIvMDUvZ2Vy/bWFuLWNhbm8tY29t/ZW1vcmEtZ29sLWNv/bnRyYS1vLXZhc2Nv/LTIzNTlfODAweDQ1/MC53ZWJw",
-    }
-    
+    };
+
     try {
-      const response = await axios.post("https://6750549b69dc1669ec1aa14e.mockapi.io/comentario", newComentario);
+      const response = await axios.post(
+        "https://6750549b69dc1669ec1aa14e.mockapi.io/comentario",
+        newComentario
+      );
       setComentarios([...comentarios, response.data]);
     } catch (error) {
       console.error("Erro ao enviar comentário:", error);
@@ -207,7 +203,7 @@ export default function Movie() {
       <div className={styles.header}>
         <div className={styles.navigation}>
           <div className={styles.active}>
-            <h2  onClick={() => navigate("/")}>Filmes</h2>
+            <h2 onClick={() => navigate("/")}>Filmes</h2>
           </div>
           <h2>Séries</h2>
           <h2 onClick={() => navigate("/minhaConta")}>Minha Conta</h2>
