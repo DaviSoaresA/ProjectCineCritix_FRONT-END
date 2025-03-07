@@ -34,6 +34,8 @@ export default function Home() {
       alert("Erro ao buscar filmes. Tente novamente.");
       setMovies([]);
     }
+    console.log("Filmes carregados:", movies);
+
   };
 
   useEffect(() => {
@@ -110,7 +112,11 @@ export default function Home() {
             <SwiperSlide
               key={movie.id}
               className={styles.swiperSlide}
-              onClick={() => navigate(`/movie/${movie.id}`)}
+              onClick={() => {
+                console.log("ID do filme clicado:", movie.id);
+                navigate(`/movie/${movie.id}`);
+              }}
+              
             >
               <img
                 src={movie.Poster || "https://via.placeholder.com/300"}
