@@ -23,7 +23,8 @@ export default function Register() {
       password: data.senha,
       confirmPassword: data.confirmaSenha,
       avatar: "bharzmna59bzd1e4uqyk",
-    };
+      profile: "USER"
+    }
     try {
       const response = await cadastro(credentials);
       setTimeout(() => {
