@@ -46,6 +46,8 @@ export async function getUserById() {
 export const getAllMovies = async () => {
   try {
     const response = await api.get("/movies");
+    console.log(response.data);
+    
     return response;
   } catch (error) {
     console.error(error);

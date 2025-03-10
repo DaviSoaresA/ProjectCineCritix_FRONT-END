@@ -54,7 +54,7 @@ export default function Footer() {
           </div>
         </div>
       </div>
-      <h3>Contate-nos!</h3>
+      <h3 className={styles.contact}>Contate-nos!</h3>
       <div className={styles.line}>
         ©2024 CineCritix. Todos os direitos reservados
         <a href="">. Termos de Uso</a> | <a href="">Politica de Privacidade</a>

@@ -13,6 +13,7 @@ const API_KEY = "2fcfe92f";
 
 export default function MyAccount() {
   const [movies, setMovies] = useState([]);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const {
     register,
@@ -38,8 +39,18 @@ export default function MyAccount() {
       }
     };
 
-    getUserById();
+    const fetchUser = async () => {
+      try {
+        const userData = await getUserById();
+        setUser(userData);
+        set;
+      } catch (error) {
+        console.error("Erro ao buscar usuário:", error.message);
+      }
+    };
 
+    getUserById();
+    fetchUser();
     getMovies();
   }, []);
 
@@ -62,8 +73,12 @@ export default function MyAccount() {
               <FaPen />
             </button>
             <img
-              src="https://conteudo.imguol.com.br/c/esporte/aa/2025/02/05/cano-comemora-apos-marcar-para-o-fluminense-contra-o-vasco-pelo-campeonato-carioca-2025-1738807199114_v2_450x450.jpg.webp"
-              alt="Foto usuário"
+              src={
+                user?.avatar
+                  ? user.avatar
+                  : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+              }
+              alt="Foto do usuário"
               className={styles.avatar}
             />
           </div>
@@ -84,7 +99,7 @@ export default function MyAccount() {
               <h3 className={styles.text}>Nome completo</h3>
               <input
                 className={styles.textInput}
-                placeholder="Nome"
+                defaultValue={user?.fullName}
                 {...register("nome", {
                   required: "O nome é obrigatório",
                 })}
@@ -98,7 +113,7 @@ export default function MyAccount() {
               <h3 className={styles.text}>Email</h3>
               <input
                 className={styles.textInput}
-                placeholder="Email"
+                defaultValue={user?.email}
                 {...register("email", {
                   required: "O email é obrigatório",
                   pattern: {

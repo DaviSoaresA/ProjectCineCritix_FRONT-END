@@ -35,12 +35,11 @@ export default function Home() {
       setMovies([]);
     }
     console.log("Filmes carregados:", movies);
-
   };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    setIsAuthenticated(token);
+    setIsAuthenticated(!!token);
     fetchMovies();
   }, []);
 
@@ -116,7 +115,6 @@ export default function Home() {
                 console.log("ID do filme clicado:", movie.id);
                 navigate(`/movie/${movie.id}`);
               }}
-              
             >
               <img
                 src={movie.Poster || "https://via.placeholder.com/300"}
@@ -161,17 +159,53 @@ export default function Home() {
             {"<"}
           </button>
 
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
+          <button
+            className={`${styles.pageButton} ${
+              currentPage === 1 ? styles.active : ""
+            }`}
+            onClick={() => setCurrentPage(1)}
+          >
+            1
+          </button>
+
+          {currentPage > 6 && <span className={styles.dots}>...</span>}
+
+          {Array.from({ length: totalPages }, (_, i) => i + 1)
+            .filter((number) => {
+              if (currentPage <= 6) {
+                return number > 1 && number <= 10;
+              } else if (currentPage >= totalPages - 4) {
+                return number >= totalPages - 9 && number < totalPages;
+              } else {
+                return number >= currentPage - 4 && number <= currentPage + 4;
+              }
+            })
+            .map((number) => (
+              <button
+                key={number}
+                className={`${styles.pageButton} ${
+                  number === currentPage ? styles.active : ""
+                }`}
+                onClick={() => setCurrentPage(number)}
+              >
+                {number}
+              </button>
+            ))}
+
+          {currentPage < totalPages - 5 && (
+            <span className={styles.dots}>...</span>
+          )}
+
+          {totalPages > 1 && (
             <button
-              key={number}
               className={`${styles.pageButton} ${
-                number === currentPage ? styles.active : ""
+                currentPage === totalPages ? styles.active : ""
               }`}
-              onClick={() => setCurrentPage(number)}
+              onClick={() => setCurrentPage(totalPages)}
             >
-              {number}
+              {totalPages}
             </button>
-          ))}
+          )}
 
           <button
             onClick={() => setCurrentPage(currentPage + 1)}
