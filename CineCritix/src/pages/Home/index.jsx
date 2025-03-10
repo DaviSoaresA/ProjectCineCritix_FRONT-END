@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { getAllMovies } from "../../service/api";
 import { FaArrowLeft, FaSearch } from "react-icons/fa";
 import Pipoca from "../../assets/Pipoca_Cinecritix.png";
+import PosterNotFound from "../../assets/PosterNotFound.jpg";
 
 export default function Home() {
   const [movies, setMovies] = useState([]);
@@ -136,8 +137,8 @@ export default function Home() {
               key={movie.id}
               className={styles.card}
               onClick={() => navigate(`/movie/${movie.id}`)}
-            >
-              <img src={movie.Poster} alt={movie.Title} />
+            >{console.log(movie)}
+              <img src={movie.Poster !== "N/A" ? movie.Poster : PosterNotFound} alt={movie.Title} />
               <div className={styles.title}>
                 <h4>{movie.Title}</h4>
               </div>
