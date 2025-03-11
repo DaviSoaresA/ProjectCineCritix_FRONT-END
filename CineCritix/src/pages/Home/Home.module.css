@@ -242,3 +242,17 @@ h2 {
 .pageButton2:disabled {
   color: #000;
 }
+
+.menu{
+  justify-self: end;
+  align-self: flex-end;
+
+  &:hover{
+    cursor: pointer;
+    color: #3152b7;
+  }
+  svg{
+    border: 1px solid #fff;
+    border-radius: 10px;
+  }
+}
