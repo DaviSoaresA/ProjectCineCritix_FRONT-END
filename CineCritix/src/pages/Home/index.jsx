@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { getAllMovies } from "../../service/api";
 import { FaArrowLeft, FaSearch } from "react-icons/fa";
 import Pipoca from "../../assets/Pipoca_Cinecritix.png";
+import PosterNotFound from "../../assets/PosterNotFound.jpg";
 
 export default function Home() {
   const [movies, setMovies] = useState([]);
@@ -119,9 +120,10 @@ export default function Home() {
               
             >
               <img
-                src={movie.Poster || "https://via.placeholder.com/300"}
+                src={movie.Poster}
                 alt={movie.Title}
                 className={styles.poster}
+                onError={(e) => e.target.src = PosterNotFound}
               />
               <h2>{movie.Title}</h2>
             </SwiperSlide>
@@ -136,8 +138,8 @@ export default function Home() {
               key={movie.id}
               className={styles.card}
               onClick={() => navigate(`/movie/${movie.id}`)}
-            >
-              <img src={movie.Poster} alt={movie.Title} />
+            >{console.log(movie)}
+              <img src={movie.Poster} alt={movie.Title} onError={(e) => e.target.src = PosterNotFound}/>
               <div className={styles.title}>
                 <h4>{movie.Title}</h4>
               </div>
