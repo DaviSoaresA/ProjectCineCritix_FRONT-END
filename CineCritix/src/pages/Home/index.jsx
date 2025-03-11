@@ -14,12 +14,15 @@ import { FaArrowLeft, FaSearch } from "react-icons/fa";
 import Pipoca from "../../assets/Pipoca_Cinecritix.png";
 import PosterNotFound from "../../assets/PosterNotFound.jpg";
 import { RxHamburgerMenu } from "react-icons/rx";
+import NavigationMobile from "../../components/NavigationMobile";
 
 export default function Home() {
   const [movies, setMovies] = useState([]);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 769);
+  const [openMenuMobile, setOpenMenuMobile] = useState(false);
   const itemsPerPage = 20;
 
   const navigate = useNavigate();
@@ -58,11 +61,10 @@ export default function Home() {
     startIndex + itemsPerPage
   );
 
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   useEffect(() =>{
     const handleResize = () =>{
-      setIsMobile(window.innerWidth <= 768);
+      setIsMobile(window.innerWidth <= 769);
     };
 
     window.addEventListener("resize", handleResize);
@@ -88,7 +90,8 @@ export default function Home() {
         <div className={styles.navigation}>
           {isMobile ? (
             <>
-              <RxHamburgerMenu size={32} className={styles.menu}/>
+              <RxHamburgerMenu size={32} className={styles.menu} onClick={() => setOpenMenuMobile(!openMenuMobile)}/>
+              {openMenuMobile && <NavigationMobile/>}
             </>
           ) : (
             <>
