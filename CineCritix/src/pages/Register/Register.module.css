@@ -109,3 +109,30 @@
   top: 0;
   right: 0;
 }
+
+@media (max-width: 769px) {
+  .faixa1 {
+    display: none;
+  }
+
+  .faixaRight{
+    display: none;
+  }
+
+  .faixaLeft{
+    display: none;
+  }
+
+  .faixa2 {
+    display: none;
+  }
+
+  .form {
+    width: 100%;
+    transform: scale(0.7);
+  }
+
+  .textInput {
+    width: 80%;
+  }
+}

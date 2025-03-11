@@ -6,6 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import styles from "../Movie/Movie.module.css";
+import { getMovieById } from "../../service/api";
 
 const API_KEY = "a1597f569dafd7069822328e2bd0d446";
 const API_KEY2 = "2fcfe92f";
