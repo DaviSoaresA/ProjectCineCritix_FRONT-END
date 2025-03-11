@@ -12,12 +12,17 @@ import { useNavigate } from "react-router-dom";
 import { getAllMovies } from "../../service/api";
 import { FaArrowLeft, FaSearch } from "react-icons/fa";
 import Pipoca from "../../assets/Pipoca_Cinecritix.png";
+import PosterNotFound from "../../assets/PosterNotFound.jpg";
+import { RxHamburgerMenu } from "react-icons/rx";
+import NavigationMobile from "../../components/NavigationMobile";
 
 export default function Home() {
   const [movies, setMovies] = useState([]);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 769);
+  const [openMenuMobile, setOpenMenuMobile] = useState(false);
   const itemsPerPage = 20;
 
   const navigate = useNavigate();
@@ -56,6 +61,16 @@ export default function Home() {
     startIndex + itemsPerPage
   );
 
+
+  useEffect(() =>{
+    const handleResize = () =>{
+      setIsMobile(window.innerWidth <= 769);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  },[window.innerWidth])
+
   return (
     <main className={styles.container}>
       <Header />
@@ -73,14 +88,23 @@ export default function Home() {
           </button>
         </div>
         <div className={styles.navigation}>
-          <div className={styles.active}>
-            <h2>Filmes</h2>
-          </div>
-          <h2>Séries</h2>
-          {isAuthenticated ? (
-            <h2 onClick={() => navigate("/minhaConta")}>Minha Conta</h2>
+          {isMobile ? (
+            <>
+              <RxHamburgerMenu size={32} className={styles.menu} onClick={() => setOpenMenuMobile(!openMenuMobile)}/>
+              {openMenuMobile && <NavigationMobile/>}
+            </>
           ) : (
-            <h2 onClick={() => navigate("/login")}>Login</h2>
+            <>
+              <div className={styles.active}>
+                <h2>Filmes</h2>
+              </div>
+              <h2>Séries</h2>
+              {isAuthenticated ? (
+                <h2 onClick={() => navigate("/minhaConta")}>Minha Conta</h2>
+              ) : (
+                <h2 onClick={() => navigate("/login")}>Login</h2>
+              )}
+            </>
           )}
         </div>
       </div>
@@ -117,9 +141,10 @@ export default function Home() {
               }}
             >
               <img
-                src={movie.Poster || "https://via.placeholder.com/300"}
+                src={movie.Poster}
                 alt={movie.Title}
                 className={styles.poster}
+                onError={(e) => (e.target.src = PosterNotFound)}
               />
               <h2>{movie.Title}</h2>
             </SwiperSlide>
@@ -135,7 +160,12 @@ export default function Home() {
               className={styles.card}
               onClick={() => navigate(`/movie/${movie.id}`)}
             >
-              <img src={movie.Poster} alt={movie.Title} />
+              {console.log(movie)}
+              <img
+                src={movie.Poster}
+                alt={movie.Title}
+                onError={(e) => (e.target.src = PosterNotFound)}
+              />
               <div className={styles.title}>
                 <h4>{movie.Title}</h4>
               </div>
