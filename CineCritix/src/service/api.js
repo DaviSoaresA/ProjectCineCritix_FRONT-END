@@ -15,7 +15,6 @@ export function getUserIdFromToken() {
     const decoded = jwtDecode(token);
     console.log("Token decodificado:", decoded);
     return decoded.id;
-    
   } catch (error) {
     console.error("Erro ao decodificar o token:", error);
     return null;
@@ -34,7 +33,6 @@ export async function getUserById() {
     });
 
     console.log("Usuário autenticado:", response.data);
-    
 
     return response.data;
   } catch (error) {
@@ -46,6 +44,8 @@ export async function getUserById() {
 export const getAllMovies = async () => {
   try {
     const response = await api.get("/movies");
+    console.log(response.data);
+
     return response;
   } catch (error) {
     console.error(error);
@@ -105,6 +105,38 @@ export async function getUser() {
     return response.data;
   } catch (error) {
     console.log("Erro ao buscar usuário:", error.message);
+    throw error;
+  }
+}
+
+export async function updateUser(userData) {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("Usuário não está autenticado");
+    }
+
+    const response = await api.put(`/users`, userData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    })
+
+    console.log("Usuário atualizado com sucesso: ", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao atualizar usuário: ", error.message);
+    throw error;
+  }
+}
+
+export async function getAllPublications() {
+  try {
+    const response = await api.get("/publications");
+    console.log("Publicações:",response.data);
+    return response;
+  } catch (error) {
+    console.error("Erro ao buscar publicações: ", error.message);
     throw error;
   }
 }

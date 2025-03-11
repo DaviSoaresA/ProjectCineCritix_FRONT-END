@@ -96,3 +96,26 @@
     margin-top: -10px;
     margin-bottom: 40px;
 }
+
+@media (max-width: 1080px) {
+    .positionUser {
+        flex-wrap: wrap;
+    }
+
+    .footer {
+        height: auto;
+    }
+
+    .title {
+        margin-top: 40px;
+    }
+    
+    .contact {
+        margin-bottom: 80px;
+    }
+
+    .line {
+        flex-wrap: wrap;
+        height: auto;
+    }
+}

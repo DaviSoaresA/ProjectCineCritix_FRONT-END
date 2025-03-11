@@ -82,8 +82,36 @@ h2 {
 
 .poster {
   width: 100%;
-  height: auto;
+  height: 70vh;
   object-fit: cover;
+}
+
+@media (max-width: 1080px) {
+  .poster {
+    height: 40vh;
+  }
+
+  .swiperContainer h2 {
+    display: none;
+  }
+
+  .card h4 {
+    display: none;
+  }
+
+  .card::before {
+    display: none;
+  }
+
+  .navigation {
+    display: none;
+  }
+
+  .positionSearch {
+    margin-top: 50px;
+    width: 80%;
+    margin-left: 20%;
+  }
 }
 
 .contain {
@@ -209,7 +237,7 @@ h2 {
   color: white;
   border: 1px solid white;
   border-radius: 50%;
-  padding: 5px 10px;
+  padding: 10px 15px;
   cursor: pointer;
   transition: 0.3s;
 }

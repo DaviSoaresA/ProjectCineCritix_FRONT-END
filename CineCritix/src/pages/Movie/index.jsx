@@ -57,47 +57,31 @@ export default function Movie() {
       try {
         const movieData = await getMovieById(id);
 
-        if (!movieData || !movieData.tmdbId) {
-          console.error("Filme não encontrado na API ou sem tmdbId.");
+        if (!movieData) {
+          console.error("Filme não encontrado na API.");
           return;
         }
 
         setMovie(movieData);
 
-        // Buscar dados adicionais do TMDb
-        const tmdbResponse = await axios.get(
-          `https://api.themoviedb.org/3/movie/${movieData.tmdbId}`,
-          { params: { api_key: API_KEY } }
-        );
-
-        if (tmdbResponse.data.backdrop_path) {
+        // Definir backdrop (imagem de fundo)
+        if (movieData.backdrop_path) {
           setBackdrop(
-            `https://image.tmdb.org/t/p/original${tmdbResponse.data.backdrop_path}`
+            `https://image.tmdb.org/t/p/original${movieData.backdrop_path}`
           );
         }
 
-        // Buscar trailer do filme
-        const trailerResponse = await axios.get(
-          `https://api.themoviedb.org/3/movie/${movieData.tmdbId}/videos`,
-          { params: { api_key: API_KEY } }
-        );
-
-        if (trailerResponse.data.results.length > 0) {
-          const trailer = trailerResponse.data.results.find(
-            (video) => video.type === "Trailer" && video.site === "YouTube"
+        // Definir trailer (caso exista)
+        if (movieData.trailerKey) {
+          setTrailerUrl(
+            `https://www.youtube.com/watch?v=${movieData.trailerKey}`
           );
-          if (trailer) {
-            setTrailerUrl(`https://www.youtube.com/watch?v=${trailer.key}`);
-          }
         }
 
-        // Buscar elenco do filme
-        const castResponse = await axios.get(
-          `https://api.themoviedb.org/3/movie/${movieData.tmdbId}/credits`,
-          { params: { api_key: API_KEY } }
-        );
-
-        setCast(castResponse.data.cast.slice(0, 10));
+        // Definir elenco
+        if (movieData.cast) {
+          setCast(movieData.cast.slice(0, 10));
+        }
       } catch (error) {
         console.error("Erro ao buscar detalhes do filme:", error);
       }
@@ -149,6 +133,7 @@ export default function Movie() {
       stars.push(
         <Star key={stars.length} color="#ccc" fill="#ccc" size={32} />
       );
+      
     }
 
     return stars;
