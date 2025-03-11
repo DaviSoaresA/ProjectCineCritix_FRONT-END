@@ -120,9 +120,10 @@ export default function Home() {
               
             >
               <img
-                src={movie.Poster || "https://via.placeholder.com/300"}
+                src={movie.Poster}
                 alt={movie.Title}
                 className={styles.poster}
+                onError={(e) => e.target.src = PosterNotFound}
               />
               <h2>{movie.Title}</h2>
             </SwiperSlide>
@@ -138,7 +139,7 @@ export default function Home() {
               className={styles.card}
               onClick={() => navigate(`/movie/${movie.id}`)}
             >{console.log(movie)}
-              <img src={movie.Poster !== "N/A" ? movie.Poster : PosterNotFound} alt={movie.Title} />
+              <img src={movie.Poster} alt={movie.Title} onError={(e) => e.target.src = PosterNotFound}/>
               <div className={styles.title}>
                 <h4>{movie.Title}</h4>
               </div>
