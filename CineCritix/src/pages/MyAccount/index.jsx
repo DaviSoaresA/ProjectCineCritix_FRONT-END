@@ -7,12 +7,15 @@ import { FaEdit, FaPen } from "react-icons/fa";
 import { FiEdit3 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { BiArrowBack } from "react-icons/bi";
-import { getUserById } from "../../service/api";
+import { getAllPublications, getUserById, updateUser } from "../../service/api";
 
 const API_KEY = "2fcfe92f";
 
 export default function MyAccount() {
   const [movies, setMovies] = useState([]);
+  const [user, setUser] = useState(null);
+  const [publications, setPublications] = useState([]);
+  const [formData, setFormData] = useState({});
   const navigate = useNavigate();
   const {
     register,
@@ -38,14 +41,47 @@ export default function MyAccount() {
       }
     };
 
-    getUserById();
+    const fetchUser = async () => {
+      try {
+        const userData = await getUserById();
+        setUser(userData);
+      } catch (error) {
+        console.error("Erro ao buscar usuário:", error.message);
+      }
+    };
 
+    const fetchPublications = async () => {
+      try {
+        const response = await getAllPublications();
+        setPublications(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar publicações:", error.message);
+      }
+    };
+
+    fetchPublications();
+    getUserById();
+    fetchUser();
     getMovies();
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/");
+  };
+
+  const onSubmit = async (data) => {
+    try {
+      if (!user) {
+        throw new Error("Usuário nao autenticado");
+      }
+
+      await updateUser(data);
+      alert("Perfil atualizado com sucesso!");
+    } catch (error) {
+      console.error("Erro ao atualizar perfil:", error.message);
+      alert("Erro ao atualizar perfil, Tente novamente mais tarde.");
+    }
   };
 
   return (
@@ -62,8 +98,12 @@ export default function MyAccount() {
               <FaPen />
             </button>
             <img
-              src="https://conteudo.imguol.com.br/c/esporte/aa/2025/02/05/cano-comemora-apos-marcar-para-o-fluminense-contra-o-vasco-pelo-campeonato-carioca-2025-1738807199114_v2_450x450.jpg.webp"
-              alt="Foto usuário"
+              src={
+                user?.avatar
+                  ? user.avatar
+                  : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+              }
+              alt="Foto do usuário"
               className={styles.avatar}
             />
           </div>
@@ -79,14 +119,14 @@ export default function MyAccount() {
         </div>
 
         <div className={styles.box}>
-          <form className={styles.form}>
+          <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
             <div className={styles.input}>
               <h3 className={styles.text}>Nome completo</h3>
               <input
                 className={styles.textInput}
-                placeholder="Nome"
-                {...register("nome", {
-                  required: "O nome é obrigatório",
+                defaultValue={user?.fullName}
+                {...register("fullName", {
+                  // required: "O nome é obrigatório",
                 })}
               />
               {errors.nome && (
@@ -98,9 +138,9 @@ export default function MyAccount() {
               <h3 className={styles.text}>Email</h3>
               <input
                 className={styles.textInput}
-                placeholder="Email"
+                defaultValue={user?.email}
                 {...register("email", {
-                  required: "O email é obrigatório",
+                  // required: "O email é obrigatório",
                   pattern: {
                     value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
                     message: "Formato de email inválido",
@@ -118,7 +158,7 @@ export default function MyAccount() {
                 className={styles.textInput}
                 placeholder="Senha"
                 {...register("senha", {
-                  required: "O senha é obrigatório",
+                  // required: "O senha é obrigatório",
                 })}
               />
               {errors.senha && (
@@ -132,7 +172,7 @@ export default function MyAccount() {
                 className={styles.textInput}
                 placeholder="Confirma senha"
                 {...register("confirmaSenha", {
-                  required: "Confirma senha é obrigatório",
+                  // required: "Confirma senha é obrigatório",
                 })}
               />
               {errors.confirmaSenha && (
