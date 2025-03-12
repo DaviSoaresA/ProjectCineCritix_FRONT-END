@@ -7,7 +7,13 @@ import { FaEdit, FaPen } from "react-icons/fa";
 import { FiEdit3 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { BiArrowBack } from "react-icons/bi";
-import { getAllPublications, getUserById, updateUser } from "../../service/api";
+import {
+  getAllPublications,
+  getUserById,
+  getUserIdFromToken,
+  updateUser,
+  uploadImageToCloudinary,
+} from "../../service/api";
 
 const API_KEY = "2fcfe92f";
 
@@ -24,23 +30,6 @@ export default function MyAccount() {
   } = useForm();
 
   useEffect(() => {
-    const getMovies = async (query) => {
-      try {
-        const response = await axios.get(
-          `http://www.omdbapi.com/?s=movie&page=1&apikey=${API_KEY}`
-        );
-
-        if (response.data.Search) {
-          setMovies(response.data.Search);
-          console.log(response.data.Search);
-        } else {
-          setMovies([]);
-        }
-      } catch (error) {
-        alert("Erro ao buscar filmes. Tente novamente.");
-      }
-    };
-
     const fetchUser = async () => {
       try {
         const userData = await getUserById();
@@ -53,16 +42,23 @@ export default function MyAccount() {
     const fetchPublications = async () => {
       try {
         const response = await getAllPublications();
-        setPublications(response.data);
+        const allPublications = response.data;
+        const userId = getUserIdFromToken();
+
+        if (user) {
+          const userPublications = allPublications.filter(
+            (pub) => pub.user?.id === userId
+          );
+          setPublications(userPublications);
+        }
+
       } catch (error) {
         console.error("Erro ao buscar publicações:", error.message);
       }
     };
 
-    fetchPublications();
-    getUserById();
     fetchUser();
-    getMovies();
+    fetchPublications();
   }, []);
 
   const handleLogout = () => {
@@ -70,17 +66,53 @@ export default function MyAccount() {
     navigate("/");
   };
 
+  const handleAvatarChange = async (event) => {
+    const file = event.target.files[0];
+
+    if (!file) return;
+
+    try {
+      const imageUrl = await uploadImageToCloudinary(file);
+      console.log("Nova URL do avatar:", imageUrl);
+
+      const response = await updateUser({ avatar: imageUrl });
+      console.log("Resposta do updateUser:", response);
+
+      alert("Avatar atualizado com sucesso!");
+      window.location.reload();
+    } catch (error) {
+      console.error(
+        "Erro ao atualizar avatar:",
+        error.response?.data || error.message
+      );
+      alert(
+        "Erro ao atualizar avatar. Verifique o console para mais detalhes."
+      );
+    }
+  };
+
   const onSubmit = async (data) => {
     try {
       if (!user) {
-        throw new Error("Usuário nao autenticado");
+        throw new Error("Usuário não autenticado");
       }
 
-      await updateUser(data);
+      const updateData = {
+        fullName: data.fullName || null,
+        email: data.email || null,
+        password: data.password || null,
+        confirmPassword: data.confirmPassword || null,
+        avatar: data.avatar || null,
+        profile: data.profile || null,
+      };
+
+      console.log("Enviando dados para atualização:", updateData);
+
+      await updateUser(updateData);
       alert("Perfil atualizado com sucesso!");
     } catch (error) {
       console.error("Erro ao atualizar perfil:", error.message);
-      alert("Erro ao atualizar perfil, Tente novamente mais tarde.");
+      alert("Erro ao atualizar perfil. Tente novamente mais tarde.");
     }
   };
 
@@ -94,14 +126,21 @@ export default function MyAccount() {
             </button>
           </div>
           <div className={styles.boxAvatar}>
-            <button className={styles.avatarEdit}>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleAvatarChange}
+              style={{ display: "none" }}
+              id="fileInput"
+            />
+            <label htmlFor="fileInput" className={styles.avatarEdit}>
               <FaPen />
-            </button>
+            </label>
+
             <img
               src={
-                user?.avatar
-                  ? user.avatar
-                  : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                user?.avatar ||
+                "https://cdn-icons-png.flaticon.com/512/149/149071.png"
               }
               alt="Foto do usuário"
               className={styles.avatar}
@@ -110,7 +149,7 @@ export default function MyAccount() {
           <div className={styles.avaliation}>
             <h2 className={styles.title}>Quantidade de avaliações</h2>
             <hr className={styles.verticalLine} />
-            <h1 className={styles.quant}>150</h1>
+            <h1 className={styles.quant}>{publications.length}</h1>
           </div>
 
           <button className={styles.button} onClick={handleLogout}>
@@ -190,23 +229,25 @@ export default function MyAccount() {
           <h1>Avaliações:</h1>
 
           <div className={styles.contain}>
-            {movies.length > 0 ? (
-              movies.map((movie) => (
-                <div key={movie.imdbID} className={styles.card}>
-                  <img src={movie.Poster} alt={movie.Title} />
+            {publications.length > 0 ? (
+              publications.map((movie) => (
+                <div key={movie.idImdb} className={styles.card}>
+                  <img src={movie.poster} alt={movie.title} />
                   <div className={styles.title}>
-                    <h4>{movie.Title}</h4>
+                    <h4>
+                      {movie.title} ({movie.year})
+                    </h4>
                   </div>
                   <button
                     className={styles.edit}
-                    onClick={() => navigate(`/movie/${movie.imdbID}`)}
+                    onClick={() => navigate(`/movie/${movie.idImdb}`)}
                   >
                     <FaPen />
                   </button>
                 </div>
               ))
             ) : (
-              <p>Carregando filmes...</p>
+              <p>Você ainda não avaliou nenhum filme.</p>
             )}
           </div>
         </div>

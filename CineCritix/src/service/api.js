@@ -140,3 +140,30 @@ export async function getAllPublications() {
     throw error;
   }
 }
+
+export async function uploadImageToCloudinary(file) {
+  const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/deb585wpe/image/upload";
+  const UPLOAD_PRESET = "agoraVai";
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", UPLOAD_PRESET);
+
+  try {
+    const response = await fetch(CLOUDINARY_URL, {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error?.message || "Erro no upload da imagem");
+    }
+
+    console.log("Imagem enviada com sucesso:", data.secure_url);
+    return data.secure_url;
+  } catch (error) {
+    console.error("Erro ao enviar imagem:", error.message);
+    throw error;
+  }
+}
