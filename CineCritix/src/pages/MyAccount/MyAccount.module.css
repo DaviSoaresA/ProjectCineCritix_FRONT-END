@@ -26,8 +26,8 @@
 }
 
 .avatar {
-  width: 60%;
-  height: auto;
+  width: 350px;
+  height: 350px;
   object-fit: cover;
   border-radius: 50%;
   margin-right: 20px;
@@ -242,7 +242,7 @@
     }
 
     .avatar {
-        width: 50%;
+        transform: scale(0.9);
     }
 
     .box {
@@ -321,7 +321,7 @@
     }
 
     .avatar {
-        width: 40%;
+        transform: scale(0.8);
     }
 
     .button {
@@ -361,5 +361,9 @@
 
     .card {
         width: 100%;
+    }
+
+    .avaliation {
+      margin-left: 55px;
     }
 }

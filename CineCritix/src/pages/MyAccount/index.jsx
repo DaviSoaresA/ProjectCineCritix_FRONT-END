@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { BiArrowBack } from "react-icons/bi";
 import {
   getAllPublications,
+  getPublicationsByMovieId,
   getUserById,
   getUserIdFromToken,
   updateUser,
@@ -41,17 +42,13 @@ export default function MyAccount() {
 
     const fetchPublications = async () => {
       try {
-        const response = await getAllPublications();
-        const allPublications = response.data;
+        const allPublications = await getPublicationsByMovieId();
         const userId = getUserIdFromToken();
 
-        if (user) {
-          const userPublications = allPublications.filter(
-            (pub) => pub.user?.id === userId
-          );
-          setPublications(userPublications);
-        }
-
+        const filteredPblications = allPublications.filter(
+          (publications) => publications.user.id === userId
+        );
+        setPublications(filteredPblications);
       } catch (error) {
         console.error("Erro ao buscar publicações:", error.message);
       }
@@ -230,17 +227,17 @@ export default function MyAccount() {
 
           <div className={styles.contain}>
             {publications.length > 0 ? (
-              publications.map((movie) => (
-                <div key={movie.idImdb} className={styles.card}>
-                  <img src={movie.poster} alt={movie.title} />
+              publications.map((p) => (
+                <div key={p.movies.id} className={styles.card}>
+                  <img src={p.movies.poster} alt={p.movies.title} />
                   <div className={styles.title}>
                     <h4>
-                      {movie.title} ({movie.year})
+                      {p.movies.title} ({p.movies.year})
                     </h4>
                   </div>
                   <button
                     className={styles.edit}
-                    onClick={() => navigate(`/movie/${movie.idImdb}`)}
+                    onClick={() => navigate(`/movie/${p.movies.id}`)}
                   >
                     <FaPen />
                   </button>
