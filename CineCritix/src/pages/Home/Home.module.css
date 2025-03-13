@@ -104,7 +104,6 @@ h2 {
   }
 
   .positionSearch {
-    margin-top: 50px;
     width: 80%;
     margin-left: 20%;
   }
@@ -226,6 +225,7 @@ h2 {
   gap: 8px;
   margin: 20px 0;
   margin-bottom: 60px;
+  flex-wrap: wrap;
 }
 
 .pageButton {
@@ -236,6 +236,7 @@ h2 {
   padding: 10px 15px;
   cursor: pointer;
   transition: 0.3s;
+  font-size: 1rem;
 }
 
 .pageButton:disabled {
@@ -257,6 +258,7 @@ h2 {
   all: unset;
   cursor: pointer;
   transition: 0.3s;
+  font-size: 1rem;
 }
 
 .pageButton2:hover {
@@ -290,6 +292,46 @@ h2 {
     justify-content: center;
     position: relative;
   }
+
+  .pagination {
+    gap: 4px;
+    transform: scale(0.8);
+  }
+
+  .pageButton {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+
+  .pageButton2 {
+    font-size: 0.9rem;
+  }
+
+  .positionSearch {
+    margin-top: 50px;
+    margin-left: 0;
+    justify-content: end;
+    margin-right: 40px;
+  }
+
+  .searchButton {
+    right: 5%;
+  }
+
+  .card {
+    width: 45%;
+  }
+
+  .noResults {
+    transform: scale(0.5);
+    align-items: center;
+    justify-content: center;
+    margin-right: 100px;
+  }
+
+  .pipoca {
+    width: 100%;
+  }
 }
 
 
@@ -298,4 +340,43 @@ h2 {
     height: 25vh;
     width: 100%;
   }
+
+  .pagination {
+    gap: 2px;
+  }
+
+  .pageButton {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+
+  .pageButton2 {
+    font-size: 0.8rem;
+  }
+
+  .positionSearch {
+    margin-left: 0;
+    justify-content: end;
+    margin-right: 40px;
+  }
+
+  .searchButton {
+    right: 5%;
+  }
+
+  .card {
+    width: 35%;
+  }
+
+  .noResults {
+    transform: scale(0.5);
+    align-items: center;
+    justify-content: center;
+    margin-right: 100px;
+  }
+
+  .pipoca {
+    width: 100%;
+  }
 }
+

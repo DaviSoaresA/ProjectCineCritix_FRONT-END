@@ -119,3 +119,25 @@
         height: auto;
     }
 }
+
+@media (max-width: 430px) {
+    .positionUser{
+        transform: scale(0.7);
+    }
+
+    .title {
+        transform: scale(0.7);
+        margin-bottom: -40px;
+    }
+    
+    .contact {
+        transform: scale(0.7);
+        margin-top: -50px;
+    }
+    
+    .line {
+        font-size: 12px;
+        padding: 10px;
+        width: 94%;
+    }
+}

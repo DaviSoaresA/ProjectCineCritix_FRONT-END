@@ -56,6 +56,8 @@ export const getAllMovies = async () => {
 export async function getMovieById(id) {
   try {
     const response = await api.get(`/movies/${id}`);
+    console.log("Detalhes do filme:", response.data);
+
     return response.data;
   } catch (error) {
     console.error("Erro ao buscar detalhes do filme:", error);
@@ -119,8 +121,8 @@ export async function updateUser(userData) {
     const response = await api.put(`/users`, userData, {
       headers: {
         Authorization: `Bearer ${token}`,
-      }
-    })
+      },
+    });
 
     console.log("Usuário atualizado com sucesso: ", response.data);
     return response.data;
@@ -133,7 +135,7 @@ export async function updateUser(userData) {
 export async function getAllPublications() {
   try {
     const response = await api.get("/publications");
-    console.log("Publicações:",response.data);
+    console.log("Publicações:", response.data);
     return response;
   } catch (error) {
     console.error("Erro ao buscar publicações: ", error.message);
@@ -141,8 +143,54 @@ export async function getAllPublications() {
   }
 }
 
+export async function getPublicationsByMovieId() {
+  try {
+    const response = await api.get("/publications");
+
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao buscar publicações: ", error.message);
+  }
+}
+
+export async function deletePublicationById(publicationId) {
+  try {
+    const response = await api.delete(`/publications/${publicationId}`);
+
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao deletar publicação: ", error.message);
+  }
+}
+
+export async function publications(data) {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("Token de autenticação não encontrado.");
+    }
+
+    const response = await api.post(`/publications`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.status === 200 || response.status === 201) {
+      return response.data;
+    } else {
+      console.error("Erro inesperado na resposta da API:", response);
+      throw new Error("Erro ao enviar a publicação.");
+    }
+  } catch (error) {
+    console.error("Erro na requisição:", error.response?.data || error.message);
+    throw error;
+  }
+}
+
 export async function uploadImageToCloudinary(file) {
-  const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/deb585wpe/image/upload";
+  const CLOUDINARY_URL =
+    "https://api.cloudinary.com/v1_1/deb585wpe/image/upload";
   const UPLOAD_PRESET = "agoraVai";
 
   const formData = new FormData();

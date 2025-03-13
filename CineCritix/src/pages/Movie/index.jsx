@@ -6,7 +6,15 @@ import { useNavigate, useParams } from "react-router-dom";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import styles from "../Movie/Movie.module.css";
-import { getMovieById } from "../../service/api";
+import {
+  deletePublicationById,
+  getMovieById,
+  getPublicationsByMovieId,
+  getUserIdFromToken,
+  publications,
+} from "../../service/api";
+import { div, h1, p } from "framer-motion/client";
+import { FaPen, FaTrash } from "react-icons/fa";
 
 const API_KEY = "a1597f569dafd7069822328e2bd0d446";
 const API_KEY2 = "2fcfe92f";
@@ -21,6 +29,8 @@ export default function Movie() {
   const [hoverRating, setHoverRating] = useState(0);
   const [comentarios, setComentarios] = useState([]);
   const [charCount, setcharCount] = useState(0);
+  const [avaliation, setAvaliation] = useState([]);
+  const userId = getUserIdFromToken()
   const navigate = useNavigate();
   const charLimit = 500;
   const {
@@ -44,11 +54,19 @@ export default function Movie() {
   useEffect(() => {
     const fetchComentarios = async () => {
       try {
-        const response = await axios.get(
-          "https://6750549b69dc1669ec1aa14e.mockapi.io/comentario"
+        const allComentarios = await getPublicationsByMovieId();
+
+        const comentariosFiltrados = allComentarios.filter(
+          (comentario) => String(comentario.movies.id) === String(id)
         );
-        setComentarios(response.data);
-        console.log(response.data);
+
+        setComentarios(comentariosFiltrados);
+
+        const avaliationUser = comentariosFiltrados.some(
+          (comentario) => String(comentario.user.id) === String(userId)
+        );
+
+        setAvaliation(avaliationUser);
       } catch (error) {
         console.error("Erro ao buscar comentários:", error);
       }
@@ -63,25 +81,68 @@ export default function Movie() {
           return;
         }
 
-        setMovie(movieData);
+        const tmdbResponse = await axios.get(
+          `https://api.themoviedb.org/3/find/${movieData.imdbID}`,
+          { params: { api_key: API_KEY, external_source: "imdb_id" } }
+        );
 
-        // Definir backdrop (imagem de fundo)
-        if (movieData.backdrop_path) {
+        let tmdbMovie = null;
+        let mediaType = "";
+
+        if (tmdbResponse.data.movie_results.length > 0) {
+          tmdbMovie = tmdbResponse.data.movie_results[0];
+          mediaType = "movie";
+        } else if (tmdbResponse.data.tv_results.length > 0) {
+          tmdbMovie = tmdbResponse.data.tv_results[0];
+          mediaType = "tv";
+        } else {
+          alert("Filme ou série não encontrado na TMDB.");
+          return;
+        }
+
+        setMovie({
+          ...movieData,
+          tmdbId: tmdbMovie.id,
+          mediaType,
+          overview: tmdbMovie.overview || movieData.Plot,
+          poster: tmdbMovie.poster_path
+            ? `https://image.tmdb.org/t/p/original${tmdbMovie.poster_path}`
+            : movieData.Poster,
+          voteAverage: tmdbMovie.vote_average || movieData.imdbRating,
+        });
+
+        if (tmdbMovie.backdrop_path) {
           setBackdrop(
-            `https://image.tmdb.org/t/p/original${movieData.backdrop_path}`
+            `https://image.tmdb.org/t/p/original${tmdbMovie.backdrop_path}`
           );
         }
 
-        // Definir trailer (caso exista)
-        if (movieData.trailerKey) {
-          setTrailerUrl(
-            `https://www.youtube.com/watch?v=${movieData.trailerKey}`
+        const trailerResponse = await axios.get(
+          `https://api.themoviedb.org/3/${mediaType}/${tmdbMovie.id}/videos`,
+          { params: { api_key: API_KEY } }
+        );
+
+        if (trailerResponse.data.results.length > 0) {
+          const trailer = trailerResponse.data.results.find(
+            (video) => video.type === "Trailer" && video.site === "YouTube"
           );
+
+          if (trailer) {
+            setTrailerUrl(`https://www.youtube.com/watch?v=${trailer.key}`);
+          } else {
+            console.warn("Nenhum trailer encontrado.");
+          }
         }
 
-        // Definir elenco
-        if (movieData.cast) {
-          setCast(movieData.cast.slice(0, 10));
+        const castResponse = await axios.get(
+          `https://api.themoviedb.org/3/${mediaType}/${tmdbMovie.id}/credits`,
+          { params: { api_key: API_KEY } }
+        );
+
+        if (castResponse.data.cast.length > 0) {
+          setCast(castResponse.data.cast.slice(0, 10));
+        } else {
+          console.warn("Nenhum ator encontrado.");
         }
       } catch (error) {
         console.error("Erro ao buscar detalhes do filme:", error);
@@ -90,10 +151,8 @@ export default function Movie() {
 
     fetchComentarios();
 
-    if (id) {
-      fetchMovie();
-    }
-  }, [id]);
+    fetchMovie();
+  }, []);
 
   const renderStars = (rating) => {
     const stars = [];
@@ -134,7 +193,6 @@ export default function Movie() {
       stars.push(
         <Star key={stars.length} color="#ccc" fill="#ccc" size={32} />
       );
-      
     }
 
     return stars;
@@ -165,23 +223,51 @@ export default function Movie() {
 
   const onSubmit = async (data) => {
     const newComentario = {
-      nome: data.nome,
-      nota: data.rating,
-      comentario: data.review,
-      foto: "https://imgs.search.brave.com/IgDJf1N6t1_bgUra7DI8aW1nxPQhyvzJjjLpjNYXs7M/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/YmFuZC51b2wuY29t/LmJyL2ltYWdlLzIw/MjUvMDIvMDUvZ2Vy/bWFuLWNhbm8tY29t/ZW1vcmEtZ29sLWNv/bnRyYS1vLXZhc2Nv/LTIzNTlfODAweDQ1/MC53ZWJw",
+      rate: Number(data.rating),
+      notes: data.review || "",
+      movieId: id,
     };
 
+    console.log("Enviando dados para API:", newComentario);
+    console.log("ID do filme:", id);
+    console.log("Nota:", data.rating);
+    console.log("Comentário:", data.review);
+
     try {
-      const response = await axios.post(
-        "https://6750549b69dc1669ec1aa14e.mockapi.io/comentario",
-        newComentario
-      );
-      setComentarios([...comentarios, response.data]);
+      const newPublication = await publications(newComentario);
+      console.log("Resposta da API:", newPublication);
+
+      if (!newPublication) {
+        alert("Erro ao enviar a avaliação. Resposta inválida.");
+        return;
+      }
+
+      setComentarios((prev) => [...prev, newPublication]);
+      alert("Avaliação enviada com sucesso!");
+      window.location.reload();
     } catch (error) {
-      console.error("Erro ao enviar comentário:", error);
+      console.error(
+        "Erro ao enviar a avaliação:",
+        error.response?.data || error
+      );
+      alert(
+        "Erro ao enviar a avaliação. Verifique os dados e tente novamente."
+      );
     }
-    alert("Avaliação enviada com sucesso!");
   };
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Tem certeza que deseja excluir esta publicação?")) {
+      try {
+        await deletePublicationById(id);
+        alert("Publicação excluída com sucesso!");
+        window.location.reload();
+      } catch (error) {
+        console.error("Erro ao excluir publicação:", error.message);
+      }
+    }
+  };
+  
 
   return (
     <main>
@@ -277,46 +363,50 @@ export default function Movie() {
         </div>
 
         <div className={styles.feedbackArea}>
-          <h1 className={styles.titleFeedback}>Avalie este Filme!</h1>
-          <div>{renderInteractiveStars()}</div>
-          <h2>Sua nota: {userRating}</h2>
-          {errors.rating && (
-            <p className={styles.error}>A nota é obrigatória!</p>
-          )}
-
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className={styles.feedbackArea}
-          >
-            <input
-              type="hidden"
-              {...register("rating", { required: "A nota é obrigatória!" })}
-              value={userRating}
-            />
-
-            {errors.rating && (
-              <p className={styles.error}>{errors.rating.message}</p>
-            )}
-
-            <textarea
-              {...register("review")}
-              placeholder="Escreva sua avaliação... (Opcional)"
-              className={styles.textarea}
-              rows="5"
-              maxLength={500}
-              onChange={handleChange}
-            ></textarea>
-            <p>
-              {charCount} / {charLimit} caracteres
-            </p>
-            <button
-              className={styles.button}
-              type="submit"
-              disabled={userRating === 0}
+          {avaliation ? (
+            <p className={styles.jaAvaliou}>Você já avaliou este filme!</p>
+          ) : (
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className={styles.feedbackArea}
             >
-              <h3>Enviar Avaliação</h3>
-            </button>
-          </form>
+              <h1 className={styles.titleFeedback}>Avalie este Filme!</h1>
+              <div>{renderInteractiveStars()}</div>
+              <h2>Sua nota: {userRating}</h2>
+              {errors.rating && (
+                <p className={styles.error}>A nota é obrigatória!</p>
+              )}
+
+              <input
+                type="hidden"
+                {...register("rating", { required: "A nota é obrigatória!" })}
+                value={userRating}
+              />
+
+              {errors.rating && (
+                <p className={styles.error}>{errors.rating.message}</p>
+              )}
+
+              <textarea
+                {...register("review")}
+                placeholder="Escreva sua avaliação... (Opcional)"
+                className={styles.textarea}
+                rows="5"
+                maxLength={500}
+                onChange={handleChange}
+              ></textarea>
+              <p>
+                {charCount} / {charLimit} caracteres
+              </p>
+              <button
+                className={styles.button}
+                type="submit"
+                disabled={userRating === 0}
+              >
+                <h3>Enviar Avaliação</h3>
+              </button>
+            </form>
+          )}
 
           <div className={styles.comentarios}>
             <h1>Avaliações:</h1>
@@ -325,23 +415,24 @@ export default function Movie() {
                 <div key={comentario.id} className={styles.comentarioCard}>
                   <img
                     src={
-                      comentario.foto
-                        ? comentario.foto
-                        : "https://via.placeholder.com/150"
+                      comentario.user.avatar
+                        ? comentario.user.avatar
+                        : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
                     }
-                    alt={comentario.nome}
+                    alt={comentario.user.avatar}
                     className={styles.avataroto}
                   />
 
                   <div className={styles.comentarioInfo}>
-                    <h3 className={styles.name}>{comentario.nome}</h3>
+                    <h3 className={styles.name}>{comentario.user.fullName}</h3>
                     <div className={styles.starsAvaliation}>
-                      <h3 className={styles.nota}>Nota: {comentario.nota}</h3>
+                      <h3 className={styles.nota}>Nota: {comentario.rate}</h3>
                       <div className={styles.star}>
-                        {renderStars(comentario.nota)}
+                        {renderStars(comentario.rate)}
                       </div>
                     </div>
-                    <p>{comentario.comentario}</p>
+                    <p>{comentario.notes}</p>
+                    {comentario.user.id === userId ? <h2 className={styles.trash} onClick={() => handleDelete(comentario.id)}><FaTrash/></h2> : ""}
                   </div>
                 </div>
               ))

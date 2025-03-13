@@ -297,6 +297,7 @@ hr {
 }
 
 .comentarioCard {
+  position: relative;
   width: 90%;
   display: flex;
   gap: 20px;
@@ -315,6 +316,7 @@ hr {
 
 .avataroto {
   width: 100px;
+  min-width: 100px;
   height: 100px;
   object-fit: cover;
   border-radius: 50%;
@@ -330,4 +332,24 @@ hr {
 
 .nota {
   margin-bottom: 0px;
+}
+
+.trash {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  cursor: pointer;
+  background-color: red;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+.trash:hover {
+  box-shadow: 0px 0px 10px red;
+  transform: scale(1.1);
 }
