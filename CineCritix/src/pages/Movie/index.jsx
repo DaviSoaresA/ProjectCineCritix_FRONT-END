@@ -15,6 +15,7 @@ import {
 } from "../../service/api";
 import { div, h1, p } from "framer-motion/client";
 import { FaPen, FaTrash } from "react-icons/fa";
+import { RxHamburgerMenu } from "react-icons/rx";
 
 const API_KEY = "a1597f569dafd7069822328e2bd0d446";
 const API_KEY2 = "2fcfe92f";
@@ -30,7 +31,7 @@ export default function Movie() {
   const [comentarios, setComentarios] = useState([]);
   const [charCount, setcharCount] = useState(0);
   const [avaliation, setAvaliation] = useState([]);
-  const userId = getUserIdFromToken()
+  const userId = getUserIdFromToken();
   const navigate = useNavigate();
   const charLimit = 500;
   const {
@@ -39,6 +40,9 @@ export default function Movie() {
     formState: { errors },
     setValue,
   } = useForm();
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 769);
+  const [openMenuMobile, setOpenMenuMobile] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const handleChange = (e) => {
     const text = e.target.value;
@@ -46,6 +50,20 @@ export default function Movie() {
       setcharCount(text.length);
     }
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsAuthenticated(!!token);
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 769);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [window.innerWidth]);
 
   useEffect(() => {
     setValue("rating", userRating);
@@ -267,18 +285,34 @@ export default function Movie() {
       }
     }
   };
-  
 
   return (
     <main>
       <Header />
       <div className={styles.header}>
         <div className={styles.navigation}>
-          <div className={styles.active}>
-            <h2 onClick={() => navigate("/")}>Filmes</h2>
-          </div>
-          <h2>Séries</h2>
-          <h2 onClick={() => navigate("/minhaConta")}>Minha Conta</h2>
+          {isMobile ? (
+            <>
+              <RxHamburgerMenu
+                size={32}
+                className={styles.menu}
+                onClick={() => setOpenMenuMobile(!openMenuMobile)}
+              />
+              {openMenuMobile && <NavigationMobile />}
+            </>
+          ) : (
+            <>
+              <div className={styles.active}>
+                <h2>Filmes</h2>
+              </div>
+              <h2>Séries</h2>
+              {isAuthenticated ? (
+                <h2 onClick={() => navigate("/minhaConta")}>Minha Conta</h2>
+              ) : (
+                <h2 onClick={() => navigate("/login")}>Login</h2>
+              )}
+            </>
+          )}
         </div>
       </div>
       {backdrop ? (
@@ -432,7 +466,16 @@ export default function Movie() {
                       </div>
                     </div>
                     <p>{comentario.notes}</p>
-                    {comentario.user.id === userId ? <h2 className={styles.trash} onClick={() => handleDelete(comentario.id)}><FaTrash/></h2> : ""}
+                    {comentario.user.id === userId ? (
+                      <h2
+                        className={styles.trash}
+                        onClick={() => handleDelete(comentario.id)}
+                      >
+                        <FaTrash />
+                      </h2>
+                    ) : (
+                      ""
+                    )}
                   </div>
                 </div>
               ))
