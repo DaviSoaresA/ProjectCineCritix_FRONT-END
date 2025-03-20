@@ -71,6 +71,19 @@ body {
   padding: 10px;
   border-radius: 10px;
   cursor: pointer;
+  position: relative;
+}
+
+.emBreve {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 110%;
+  height: 20px;
+  top: -15px;
+  font-size: 80%;
+  background-color: red;
 }
 
 .icon:hover {

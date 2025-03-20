@@ -15,11 +15,21 @@ export default function NavigationMobile() {
       <div className={styles.triagle}></div>
       <div className={styles.menu}>
         <h2 className={styles.movie}>Filmes</h2>
-        <h2 className={styles.serie}>Serie</h2>
+        <div className={styles.positionEmBreve}>
+          <p className={styles.emBreve}>Em Breve</p>
+          <h2 className={styles.serie}>Serie</h2>
+        </div>
         {isAuthenticated ? (
-          <h2 className={styles.account} onClick={() => navigation("/minhaConta")}>Minha Conta</h2>
+          <h2
+            className={styles.account}
+            onClick={() => navigation("/minhaConta")}
+          >
+            Minha Conta
+          </h2>
         ) : (
-          <h2 className={styles.login} onClick={() => navigation("/login")}>Login</h2>
+          <h2 className={styles.login} onClick={() => navigation("/login")}>
+            Login
+          </h2>
         )}
       </div>
     </>

@@ -240,16 +240,21 @@ export default function Movie() {
   };
 
   const onSubmit = async (data) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      const logar = window.confirm("Necessário fazer login para avaliar. Deseja fazer login agora?");
+      if (logar) {
+        window.location.href = "/login";
+      }
+      return
+    }
+
     const newComentario = {
       rate: Number(data.rating),
       notes: data.review || "",
       movieId: id,
     };
-
-    console.log("Enviando dados para API:", newComentario);
-    console.log("ID do filme:", id);
-    console.log("Nota:", data.rating);
-    console.log("Comentário:", data.review);
 
     try {
       const newPublication = await publications(newComentario);

@@ -112,6 +112,7 @@ export default function Login() {
                     onClick={() => loginWithProvider("google")}
                     style={{ cursor: "pointer" }}
                   >
+                    <div className={styles.emBreve}><p>Em Breve</p></div>
                     <FcGoogle size={40} />
                   </div>
                   <div
@@ -119,6 +120,7 @@ export default function Login() {
                     onClick={() => loginWithProvider("facebook")}
                     style={{ cursor: "pointer" }}
                   >
+                    <div className={styles.emBreve}><p>Em Breve</p></div>
                     <FaFacebookSquare size={40} color="#1877F2" />
                   </div>
                 </>

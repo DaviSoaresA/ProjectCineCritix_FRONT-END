@@ -49,6 +49,23 @@
   color: #3152b7;
 }
 
+.positionEmBreve{
+  position: relative;
+}
+
+.emBreve {
+  position: absolute;
+  top: -10px;
+  left: 10px;
+  background-color: red;
+  width: 110%;
+  height: 20px;
+  font-size: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 ::-webkit-scrollbar {
   width: 13px;
   height: 10px;
