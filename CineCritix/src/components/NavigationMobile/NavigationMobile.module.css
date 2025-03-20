@@ -36,11 +36,27 @@
 
 .serie{
     width: 95%;
-    &:hover{
+    /* &:hover{
         background-color: #ddd;
         border-radius: 10px;
         color: #3172b7;
-    }
+    } */
+}
+
+.positionEmBreve {
+    position: relative;
+}
+
+.emBreve{
+    position: absolute;
+    top: -2px;
+    left: 10px;
+    width: 110%;
+    font-size: 80%;
+    background-color: red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .account{

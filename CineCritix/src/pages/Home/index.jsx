@@ -61,15 +61,14 @@ export default function Home() {
     startIndex + itemsPerPage
   );
 
-
-  useEffect(() =>{
-    const handleResize = () =>{
+  useEffect(() => {
+    const handleResize = () => {
       setIsMobile(window.innerWidth <= 769);
     };
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  },[window.innerWidth])
+  }, [window.innerWidth]);
 
   return (
     <main className={styles.container}>
@@ -90,15 +89,22 @@ export default function Home() {
         <div className={styles.navigation}>
           {isMobile ? (
             <>
-              <RxHamburgerMenu size={32} className={styles.menu} onClick={() => setOpenMenuMobile(!openMenuMobile)}/>
-              {openMenuMobile && <NavigationMobile/>}
+              <RxHamburgerMenu
+                size={32}
+                className={styles.menu}
+                onClick={() => setOpenMenuMobile(!openMenuMobile)}
+              />
+              {openMenuMobile && <NavigationMobile />}
             </>
           ) : (
             <>
               <div className={styles.active}>
                 <h2>Filmes</h2>
               </div>
-              <h2>Séries</h2>
+              <div className={styles.positionEmBreve}>
+                <p className={styles.emBreve}>Em breve</p>
+                <h2>Séries</h2>
+              </div>
               {isAuthenticated ? (
                 <h2 onClick={() => navigate("/minhaConta")}>Minha Conta</h2>
               ) : (
